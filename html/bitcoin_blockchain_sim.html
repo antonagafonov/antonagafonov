@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Blockchain Network Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+            color: #00ff88;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff88;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .network-container {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            min-height: 300px;
+            height: 400px;
+        }
+
+        .control-panel {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .node {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s ease;
+            border: 2px solid #00ff88;
+        }
+
+        .node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+        }
+
+        .node.mining {
+            animation: mining 1s infinite;
+        }
+
+        @keyframes mining {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .connection {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #00ff88, #0088ff);
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .wallet-section {
+            margin-bottom: 25px;
+        }
+
+        .wallet-section h3 {
+            margin-bottom: 15px;
+            color: #00ccff;
+        }
+
+        .wallet {
+            background: rgba(0, 136, 255, 0.2);
+            border: 1px solid #00ccff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .wallet:hover {
+            transform: translateX(3px);
+            box-shadow: 0 2px 8px rgba(0, 204, 255, 0.3);
+        }
+
+        .transaction-form {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ffcc00;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #00ff88;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #00ff88;
+            font-family: inherit;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #00ff88);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .network-stats {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .mempool {
+            background: rgba(255, 204, 0, 0.2);
+            border: 1px solid #ffcc00;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .transaction {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #ffcc00;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .block-info {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 600px;
+            max-height: 70vh;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .close-btn {
+            float: right;
+            background: #ff6b6b;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .blockchain-display {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .block {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border: 1px solid #00ff88;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .block:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .block.genesis {
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+        }
+
+        .block.new {
+            animation: newBlock 2s ease-out;
+        }
+
+        @keyframes newBlock {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .propagation-wave {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.8), transparent);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Slider Styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-track {
+            background: #333;
+            height: 8px;
+            border-radius: 5px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+        }
+
+        input[type="range"]::-moz-range-track {
+            background: #333;
+            height: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Custom Scrollbar Styling */
+        #walletsContainer::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #walletsContainer::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        #walletsContainer::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00ccff, #0088ff);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        #walletsContainer::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Firefox scrollbar */
+        #walletsContainer {
+            scrollbar-width: thin;
+            scrollbar-color: #00ccff rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mempool Custom Scrollbar Styling */
+        #mempoolTransactions::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #mempoolTransactions::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        #mempoolTransactions::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ffcc00, #ffa500);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        #mempoolTransactions::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+
+        /* Firefox scrollbar for mempool */
+        #mempoolTransactions {
+            scrollbar-width: thin;
+            scrollbar-color: #ffcc00 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Network Height Slider Styling */
+        #heightSlider::-webkit-slider-track {
+            background: #333;
+            height: 8px;
+            border-radius: 5px;
+        }
+
+        #heightSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        #heightSlider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.8);
+        }
+
+        #heightSlider::-moz-range-track {
+            background: #333;
+            height: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        #heightSlider::-moz-range-thumb {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⛏️ Bitcoin Network Simulator</h1>
+        <p>Multi-Node Blockchain Network with Proof of Work Mining</p>
+    </div>
+
+    <div class="main-container">
+        <div class="network-container" id="networkContainer">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 id="networkTitle">🌐 Network Topology (7 Nodes)</h3>
+                <button onclick="fitNodesToScreen()" style="background: linear-gradient(45deg, #4ecdc4, #44a08d); border: none; padding: 8px 12px; border-radius: 6px; color: white; font-size: 0.9em; cursor: pointer;">📐 Fit All Nodes</button>
+            </div>
+            <!-- Nodes will be dynamically created -->
+        </div>
+
+        <div class="control-panel">
+            <div class="mempool">
+                <h3>📝 Transaction Mempool</h3>
+                <div id="mempoolTransactions" style="height: 180px; overflow-y: auto; border: 1px solid #ffcc00; border-radius: 6px; background: rgba(255, 204, 0, 0.05); padding: 8px;">
+                    <p>No pending transactions</p>
+                </div>
+            </div>
+
+            <div class="wallet-section">
+                <h3>💰 User Wallets</h3>
+                <div id="walletsContainer" style="max-height: 240px; overflow-y: auto; padding-right: 5px; border: 1px solid #00ccff; border-radius: 8px; background: rgba(0, 136, 255, 0.05);">
+                    <!-- Wallets will be dynamically generated here -->
+                </div>
+                <button onclick="generateNewWallet()" style="background: linear-gradient(45deg, #00ccff, #0088ff); margin-top: 10px;">🆕 Generate New Wallet</button>
+            </div>
+
+            <div class="wallet-section">
+                <h3>⛏️ Node Wallets (Mining Rewards) 💰</h3>
+                <div style="margin-bottom: 10px; padding: 8px; background: rgba(255,215,0,0.1); border: 1px solid #ffd700; border-radius: 5px;">
+                    <small style="color: #ffd700;">👀 Watch nodes earn Bitcoin through mining! Block reward: 6.25 BTC + transaction fees</small>
+                </div>
+                <div id="nodeWalletsContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ffd700; border-radius: 8px; background: rgba(255, 215, 0, 0.05); padding: 5px;">
+                    <!-- Node wallets will be dynamically generated here -->
+                </div>
+                <button onclick="addNewNode()" style="background: linear-gradient(45deg, #ffd700, #ff8c00); margin-top: 10px; width: 100%;">⚡ Add New Mining Node</button>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button onclick="addMultipleNodes(10)" style="flex: 1; background: linear-gradient(45deg, #00ccff, #0088ff);">➕ Add 10 Nodes</button>
+                    <button onclick="addMultipleNodes(100)" style="flex: 1; background: linear-gradient(45deg, #ff6b6b, #ffa500);">🚀 Add 100 Nodes</button>
+                </div>
+            </div>
+
+            <div class="transaction-form">
+                <h3>💸 Create Transaction</h3>
+                <div class="form-group">
+                    <label>From:</label>
+                    <select id="fromWallet">
+                        <!-- Options will be dynamically populated -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>To:</label>
+                    <select id="toWallet">
+                        <!-- Options will be dynamically populated -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount (BTC):</label>
+                    <input type="number" id="amount" value="1.0" step="0.1" min="0.1">
+                </div>
+                <button onclick="createTransaction()">🚀 Send Transaction</button>
+            </div>
+
+            <div class="network-stats">
+                <h3>📊 Network Stats</h3>
+                <p>Block Height: <span id="blockHeight">1</span></p>
+                <p>Difficulty: <span id="difficulty">4</span></p>
+                <p>Hash Rate: <span id="hashRate">1.2 TH/s</span></p>
+                <p>Total Supply: <span id="totalSupply">400.00</span> BTC</p>
+                <p>User Balance: <span id="circulating">400.00</span> BTC</p>
+                <p>Avg Connections: <span id="avgConnections">0.0</span></p> <!-- 👈 new -->
+            </div>
+
+            <button onclick="startMining()">⛏️ Start Mining</button>
+            <button onclick="showNodeInfo()">🔍 Show Node Info</button>
+            <button onclick="showNodeConnections()">🌐 Node Connections</button>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <button onclick="decreaseDifficulty()" style="flex: 1;">⚙️ Difficulty -</button>
+                <button onclick="increaseDifficulty()" style="flex: 1;">⚙️ Difficulty +</button>
+            </div>
+
+            <div style="background: rgba(78, 205, 196, 0.1); border: 1px solid #4ecdc4; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                <label style="display: block; margin-bottom: 10px; color: #4ecdc4;">
+                    📏 Network Height: <span id="heightValue">400</span>px
+                </label>
+                <input type="range" id="heightSlider" min="200" max="800" step="50" value="400" 
+                       style="width: 100%; height: 8px; border-radius: 5px; background: #333; 
+                              outline: none; -webkit-appearance: none;" 
+                       oninput="updateNetworkHeight(this.value)">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8em; color: #999; margin-top: 5px;">
+                    <span>200px (Compact)</span>
+                    <span>500px (Medium)</span>
+                    <span>800px (Large)</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <button onclick="startRandomSystem()" id="randomSystemBtn" style="flex: 1; background: linear-gradient(45deg, #ff6b6b, #ffa500);">🎲 Start Auto System</button>
+                <button onclick="stopRandomSystem()" style="flex: 1; background: linear-gradient(45deg, #666, #333);">⏹️ Stop Auto</button>
+            </div>
+
+            <div style="background: rgba(255, 204, 0, 0.1); border: 1px solid #ffcc00; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                <label style="display: block; margin-bottom: 10px; color: #ffcc00;">
+                    ⏱️ Auto System Speed (Δt): <span id="deltaValue">5.0</span>s
+                </label>
+                <input type="range" id="deltaSlider" min="1" max="20" step="0.5" value="5" 
+                       style="width: 100%; height: 8px; border-radius: 5px; background: #333; 
+                              outline: none; -webkit-appearance: none;" 
+                       oninput="updateDelta(this.value)">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8em; color: #999; margin-top: 5px;">
+                    <span>1s (Fast)</span>
+                    <span>10s (Medium)</span>
+                    <span>20s (Slow)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="block-info" id="blockInfo">
+        <button class="close-btn" onclick="closeBlockInfo()">×</button>
+        <div id="blockInfoContent"></div>
+    </div>
+
+    <script>
+        // Blockchain and network simulation
+        class BitcoinSimulator {
+            constructor() {
+                this.nodes = [];
+                this.wallets = {
+                    alice: 100.0,
+                    bob: 100.0,
+                    toon: 100.0,
+                    jerry: 100.0
+                };
+                this.nodeWallets = {
+                    node0: 0.0,
+                    node1: 0.0,
+                    node2: 0.0,
+                    node3: 0.0,
+                    node4: 0.0,
+                    node5: 0.0,
+                    node6: 0.0
+                };
+                this.pendingBalances = {
+                    alice: 0,
+                    bob: 0,
+                    toon: 0,
+                    jerry: 0
+                };
+                this.nodePendingBalances = {
+                    node0: 0, node1: 0, node2: 0, node3: 0, node4: 0, node5: 0, node6: 0
+                };
+                this.mempool = [];
+                this.difficulty = 4;
+                this.blockHeight = 1;
+                this.isMining = false;
+                this.isAutoSystem = false;
+                this.deltaTime = 5.0; // Default auto system interval in seconds
+                this.hashRate = 1.2;
+                this.blockReward = 6.25; // Current Bitcoin block reward
+                this.nodeIdCounter = 7; // Counter for new node IDs
+                
+                this.initializeNodes();
+                this.updateStats();
+                this.updateWalletDisplay();
+                this.updateNodeWalletDisplay(); // Always show node wallets from start
+                this.updateTransactionSelects();
+                this.updateNetworkTitle(); // Set initial title with node count
+            }
+
+            initializeNodes() {
+                const positions = [
+                    { x: 200, y: 80 }, { x: 400, y: 100 }, { x: 600, y: 80 },
+                    { x: 150, y: 200 }, { x: 350, y: 220 }, { x: 550, y: 200 },
+                    { x: 375, y: 320 }
+                ];
+
+                for (let i = 0; i < 7; i++) {
+                    const node = {
+                        id: i,
+                        blockchain: [this.createGenesisBlock()],
+                        position: positions[i],
+                        peers: [],
+                        isMining: false
+                    };
+                    this.nodes.push(node);
+                    this.createNodeElement(node);
+                }
+
+                // Connect nodes (simplified topology)
+                this.connectNodes(0, [1, 3]);
+                this.connectNodes(1, [0, 2, 4]);
+                this.connectNodes(2, [1, 5]);
+                this.connectNodes(3, [0, 4, 6]);
+                this.connectNodes(4, [1, 3, 5, 6]);
+                this.connectNodes(5, [2, 4, 6]);
+                this.connectNodes(6, [3, 4, 5]);
+            }
+
+            createGenesisBlock() {
+                return {
+                    index: 0,
+                    timestamp: Date.now(),
+                    previousHash: '0000000000000000000000000000000000000000000000000000000000000000',
+                    merkleRoot: '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b',
+                    nonce: 2083236893,
+                    hash: '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f',
+                    transactions: [{
+                        id: 'genesis',
+                        from: 'coinbase',
+                        to: 'system',
+                        amount: 50.0,
+                        fee: 0,
+                        timestamp: Date.now()
+                    }],
+                    difficulty: 1
+                };
+            }
+
+            createNodeElement(node) {
+                const container = document.getElementById('networkContainer');
+                const nodeEl = document.createElement('div');
+                nodeEl.className = 'node';
+                nodeEl.id = `node-${node.id}`;
+                nodeEl.style.left = node.position.x + 'px';
+                nodeEl.style.top = node.position.y + 'px';
+                nodeEl.innerHTML = `N${node.id}`;
+                nodeEl.onclick = () => this.showBlockchain(node.id);
+                container.appendChild(nodeEl);
+            }
+
+            connectNodes(nodeId, peerIds) {
+                const node = this.nodes[nodeId];
+                peerIds.forEach(peerId => {
+                    if (!node.peers.includes(peerId)) {
+                        node.peers.push(peerId);
+                        this.createConnection(nodeId, peerId);
+                    }
+                });
+            }
+
+            showNodeConnections() {
+                const content = document.getElementById('blockInfoContent');
+                
+                let html = `<h3>🌐 Network Topology - Node Connections</h3>`;
+                html += `<div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">`;
+                html += `<strong>Total Nodes:</strong> ${this.nodes.length} | <strong>Total Connections:</strong> ${this.getTotalConnections()}<br>`;
+                html += `<small>Each connection is bidirectional between two nodes</small>`;
+                html += `</div>`;
+                
+                // Create connection matrix
+                html += `<div style="max-height: 400px; overflow-y: auto;">`;
+                
+                this.nodes.forEach(node => {
+                    const connectionCount = node.peers.length;
+                    const connectionColor = connectionCount >= 4 ? '#00ff88' : connectionCount >= 2 ? '#ffcc00' : '#ff6b6b';
+                    
+                    html += `
+                        <div style="margin-bottom: 15px; padding: 12px; background: rgba(78,205,196,0.1); 
+                                    border: 1px solid #4ecdc4; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <strong style="color: #4ecdc4;">Node ${node.id}</strong>
+                                <span style="color: ${connectionColor}; font-weight: bold;">
+                                    ${connectionCount} connection${connectionCount !== 1 ? 's' : ''}
+                                </span>
+                            </div>
+                            <div style="color: #ccc;">
+                                ${connectionCount > 0 ? 
+                                    `Connected to: ${node.peers.map(peerId => `Node ${peerId}`).join(', ')}` :
+                                    `<span style="color: #ff6b6b;">No connections (Isolated)</span>`
+                                }
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+                
+                // Add network health analysis
+                html += `<div style="background: rgba(0,255,136,0.1); padding: 12px; border-radius: 8px; margin-top: 15px;">`;
+                html += `<h4 style="color: #00ff88; margin-bottom: 8px;">Network Health Analysis:</h4>`;
+                
+                const isolatedNodes = this.nodes.filter(n => n.peers.length === 0).length;
+                const wellConnectedNodes = this.nodes.filter(n => n.peers.length >= 3).length;
+                const avgConnections = this.nodes.reduce((sum, n) => sum + n.peers.length, 0) / this.nodes.length;
+                
+                html += `<div style="font-size: 0.9em; color: #ccc;">`;
+                html += `• <strong>Average Connections:</strong> ${avgConnections.toFixed(1)} per node<br>`;
+                html += `• <strong>Well Connected Nodes:</strong> ${wellConnectedNodes} (3+ connections)<br>`;
+                html += `• <strong>Isolated Nodes:</strong> ${isolatedNodes} (no connections)<br>`;
+                
+                const networkHealth = isolatedNodes === 0 && avgConnections >= 2 ? 
+                    '<span style="color: #00ff88;">Excellent</span>' :
+                    isolatedNodes <= 1 && avgConnections >= 1.5 ?
+                    '<span style="color: #ffcc00;">Good</span>' :
+                    '<span style="color: #ff6b6b;">Needs Improvement</span>';
+                    
+                html += `• <strong>Network Health:</strong> ${networkHealth}`;
+                html += `</div></div>`;
+                
+                content.innerHTML = html;
+                document.getElementById('blockInfo').style.display = 'block';
+            }
+
+            getTotalConnections() {
+                // Count unique connections (avoid counting each connection twice)
+                const connections = new Set();
+                this.nodes.forEach(node => {
+                    node.peers.forEach(peerId => {
+                        const pair = [node.id, peerId].sort().join('-');
+                        connections.add(pair);
+                    });
+                });
+                return connections.size;
+            }
+
+            createConnection(nodeId1, nodeId2) {
+                const container = document.getElementById('networkContainer');
+                const node1 = this.nodes.find(n => n.id === nodeId1);
+                const node2 = this.nodes.find(n => n.id === nodeId2);
+                
+                if (!node1 || !node2) {
+                    console.warn(`Cannot create connection: Node ${nodeId1} or Node ${nodeId2} not found`);
+                    return;
+                }
+                
+                const connection = document.createElement('div');
+                connection.className = 'connection';
+                connection.setAttribute('data-connection', `${nodeId1}-${nodeId2}`);
+                
+                const dx = node2.position.x - node1.position.x;
+                const dy = node2.position.y - node1.position.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                connection.style.width = length + 'px';
+                connection.style.left = (node1.position.x + 30) + 'px'; // 30px = half of 60px node width
+                connection.style.top = (node1.position.y + 30) + 'px'; // 30px = half of 60px node height
+                connection.style.transformOrigin = '0 0';
+                connection.style.transform = `rotate(${angle}deg)`;
+                
+                container.appendChild(connection);
+            }
+
+            createTransaction(from, to, amount) {
+                if (this.wallets[from] + this.pendingBalances[from] < amount) {
+                    alert('Insufficient balance (including pending transactions)!');
+                    return;
+                }
+
+                // Dynamic fee based on mempool congestion
+                const baseFee = 0.0001;
+                const congestionMultiplier = Math.max(1, this.mempool.length / 5);
+                const fee = baseFee * congestionMultiplier;
+
+                const transaction = {
+                    id: this.generateTransactionId(),
+                    from: from,
+                    to: to,
+                    amount: parseFloat(amount),
+                    fee: parseFloat(fee.toFixed(6)),
+                    timestamp: Date.now(),
+                    signature: this.generateSignature()
+                };
+
+                this.mempool.push(transaction);
+                
+                // Update pending balances
+                this.pendingBalances[from] -= (transaction.amount + transaction.fee);
+                this.pendingBalances[to] += transaction.amount;
+                
+                this.updateMempoolDisplay();
+                this.updateWalletDisplay(); // Update display immediately
+                this.propagateTransaction(transaction);
+                
+                console.log('Transaction created:', transaction);
+            }
+
+            generateTransactionId() {
+                return Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+            }
+
+            generateSignature() {
+                return Array.from({length: 128}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+            }
+
+            propagateTransaction(transaction) {
+                // Simulate transaction propagation across network
+                this.nodes.forEach(node => {
+                    setTimeout(() => {
+                        this.animatePropagation(node.id);
+                    }, Math.random() * 1000);
+                });
+            }
+
+            animatePropagation(nodeId) {
+                const nodeEl = document.getElementById(`node-${nodeId}`);
+                const wave = document.createElement('div');
+                wave.className = 'propagation-wave';
+                
+                const rect = nodeEl.getBoundingClientRect();
+                const container = document.getElementById('networkContainer').getBoundingClientRect();
+                
+                wave.style.left = (rect.left - container.left + 30) + 'px';
+                wave.style.top = (rect.top - container.top + 30) + 'px';
+                
+                document.getElementById('networkContainer').appendChild(wave);
+                
+                setTimeout(() => {
+                    wave.style.transform = 'scale(10)';
+                    wave.style.opacity = '0';
+                }, 100);
+                
+                setTimeout(() => {
+                    wave.remove();
+                }, 1000);
+            }
+
+            async startMining() {
+                if (this.isMining) {
+                    alert('Mining already in progress!');
+                    return;
+                }
+
+                if (this.mempool.length === 0) {
+                    alert('No transactions to mine!');
+                    return;
+                }
+
+                this.isMining = true;
+                const minerNode = Math.floor(Math.random() * 7);
+                
+                // Visual mining indication
+                const nodeEl = document.getElementById(`node-${minerNode}`);
+                nodeEl.classList.add('mining');
+                
+                console.log(`Node ${minerNode} started mining...`);
+                
+                // Simulate proof of work
+                const block = await this.mineBlock(minerNode);
+                
+                nodeEl.classList.remove('mining');
+                this.isMining = false;
+                
+                if (block) {
+                    this.addBlockToChain(block, minerNode);
+                    this.processTransactions(block.transactions);
+                    this.distributeMiningRewards(block, minerNode);
+                    this.propagateBlock(block, minerNode);
+                }
+            }
+
+            async mineBlock(minerNodeId) {
+                const transactions = this.mempool.slice(0, 10); // Max 10 transactions per block
+                const previousBlock = this.nodes[minerNodeId].blockchain[this.nodes[minerNodeId].blockchain.length - 1];
+                
+                const block = {
+                    index: this.blockHeight,
+                    timestamp: Date.now(),
+                    previousHash: previousBlock.hash,
+                    transactions: transactions,
+                    merkleRoot: this.calculateMerkleRoot(transactions),
+                    difficulty: this.difficulty,
+                    nonce: 0,
+                    miner: `Node-${minerNodeId}`
+                };
+
+                // Proof of work simulation
+                const target = '0'.repeat(this.difficulty);
+                let attempts = 0;
+                const maxAttempts = 100000;
+
+                return new Promise((resolve) => {
+                    const mine = () => {
+                        block.nonce++;
+                        attempts++;
+                        block.hash = this.calculateHash(block);
+
+                        if (block.hash.startsWith(target)) {
+                            console.log(`Block mined! Hash: ${block.hash}, Attempts: ${attempts}`);
+                            resolve(block);
+                        } else if (attempts < maxAttempts) {
+                            // Continue mining (simulate async work)
+                            setTimeout(mine, 1);
+                        } else {
+                            console.log('Mining timeout');
+                            resolve(null);
+                        }
+                    };
+                    
+                    setTimeout(mine, 10);
+                });
+            }
+
+            calculateHash(block) {
+                const data = block.index + block.timestamp + block.previousHash + 
+                           block.merkleRoot + block.nonce + block.difficulty;
+                return this.sha256(data).substring(0, 64);
+            }
+
+            sha256(data) {
+                // Simplified hash function for simulation
+                let hash = 0;
+                for (let i = 0; i < data.length; i++) {
+                    const char = data.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32-bit integer
+                }
+                return Math.abs(hash).toString(16).padStart(64, '0');
+            }
+
+            calculateMerkleRoot(transactions) {
+                if (transactions.length === 0) return '0'.repeat(64);
+                
+                let hashes = transactions.map(tx => this.sha256(JSON.stringify(tx)));
+                
+                while (hashes.length > 1) {
+                    const newHashes = [];
+                    for (let i = 0; i < hashes.length; i += 2) {
+                        const left = hashes[i];
+                        const right = hashes[i + 1] || left;
+                        newHashes.push(this.sha256(left + right));
+                    }
+                    hashes = newHashes;
+                }
+                
+                return hashes[0];
+            }
+
+            addBlockToChain(block, minerNodeId) {
+                this.nodes.forEach(node => {
+                    node.blockchain.push({...block});
+                });
+                
+                // Clear pending balances for confirmed transactions
+                block.transactions.forEach(tx => {
+                    const index = this.mempool.findIndex(mTx => mTx.id === tx.id);
+                    if (index > -1) {
+                        // Reset pending balances for this transaction
+                        if (this.pendingBalances[tx.from] !== undefined) {
+                            this.pendingBalances[tx.from] += (tx.amount + tx.fee);
+                        }
+                        if (this.pendingBalances[tx.to] !== undefined) {
+                            this.pendingBalances[tx.to] -= tx.amount;
+                        }
+                        this.mempool.splice(index, 1);
+                    }
+                });
+                
+                this.blockHeight++;
+                this.updateStats();
+                this.updateMempoolDisplay();
+                this.updateWalletDisplay(); // Update display after clearing pending
+            }
+
+            distributeMiningRewards(block, minerNodeId) {
+                // Calculate total transaction fees
+                const totalFees = block.transactions.reduce((sum, tx) => sum + (tx.fee || 0), 0);
+                
+                // Miner gets block reward + transaction fees
+                const totalReward = this.blockReward + totalFees;
+                const minerWallet = `node${minerNodeId}`;
+                
+                this.nodeWallets[minerWallet] += totalReward;
+                
+                console.log(`💰 Node ${minerNodeId} mined block ${block.index}:`);
+                console.log(`   Block reward: ${this.blockReward} BTC`);
+                console.log(`   Transaction fees: ${totalFees.toFixed(4)} BTC`);
+                console.log(`   Total reward: ${totalReward.toFixed(4)} BTC`);
+                
+                this.updateNodeWalletDisplay();
+                
+                // Show mining reward notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed; top: 70px; right: 20px; z-index: 1000;
+                    background: linear-gradient(45deg, #ffd700, #ff8c00);
+                    color: white; padding: 15px; border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+                    animation: slideIn 0.5s ease-out;
+                `;
+                notification.innerHTML = `
+                    ⛏️ <strong>Block Mined!</strong><br>
+                    Node ${minerNodeId}: +${totalReward.toFixed(4)} BTC<br>
+                    <small>Block ${block.index} | ${block.transactions.length} txs</small>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.5s ease-out';
+                    setTimeout(() => notification.remove(), 500);
+                }, 4000);
+            }
+
+            processTransactions(transactions) {
+                transactions.forEach(tx => {
+                    if (tx.from !== 'coinbase' && this.wallets[tx.from] !== undefined) {
+                        this.wallets[tx.from] -= (tx.amount + tx.fee);
+                    }
+                    if (this.wallets[tx.to] !== undefined) {
+                        this.wallets[tx.to] += tx.amount;
+                    }
+                });
+                
+                this.updateWalletDisplay();
+            }
+
+            propagateBlock(block, minerNodeId) {
+                // Simulate block propagation with delay
+                this.nodes.forEach((node, index) => {
+                    if (index !== minerNodeId) {
+                        setTimeout(() => {
+                            this.animatePropagation(index);
+                        }, Math.random() * 2000);
+                    }
+                });
+            }
+
+            showBlockchain(nodeId) {
+                const node = this.nodes[nodeId];
+                const content = document.getElementById('blockInfoContent');
+                
+                let html = `<h3>Node ${nodeId} Blockchain</h3>`;
+                html += '<div class="blockchain-display">';
+                
+                node.blockchain.forEach((block, index) => {
+                    const blockClass = index === 0 ? 'block genesis' : 'block';
+                    html += `
+                        <div class="${blockClass}" onclick="showBlockDetails(${nodeId}, ${index})">
+                            <strong>Block ${block.index}</strong><br>
+                            Hash: ${block.hash ? block.hash.substring(0, 20) + '...' : 'Calculating...'}<br>
+                            Transactions: ${block.transactions.length}<br>
+                            ${block.miner ? `Miner: ${block.miner}` : ''}
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                content.innerHTML = html;
+                document.getElementById('blockInfo').style.display = 'block';
+            }
+
+            updateWalletDisplay() {
+                const container = document.getElementById('walletsContainer');
+                container.innerHTML = '';
+                
+                Object.keys(this.wallets).forEach(wallet => {
+                    const walletDiv = document.createElement('div');
+                    walletDiv.className = 'wallet';
+                    
+                    const walletName = wallet.charAt(0).toUpperCase() + wallet.slice(1);
+                    const balance = this.wallets[wallet].toFixed(2);
+                    const pending = this.pendingBalances[wallet];
+                    
+                    let pendingText = '';
+                    if (pending !== 0) {
+                        const sign = pending > 0 ? '+' : '';
+                        pendingText = ` <span style="color: #ffcc00; font-size: 0.9em;">(${sign}${pending.toFixed(2)} pending)</span>`;
+                    }
+                    
+                    walletDiv.innerHTML = `
+                        <span>${walletName}:</span>
+                        <span>${balance} BTC${pendingText}</span>
+                    `;
+                    
+                    container.appendChild(walletDiv);
+                });
+            }
+
+            updateTransactionSelects() {
+                const fromSelect = document.getElementById('fromWallet');
+                const toSelect = document.getElementById('toWallet');
+                
+                const currentFrom = fromSelect.value;
+                const currentTo = toSelect.value;
+                
+                fromSelect.innerHTML = '';
+                toSelect.innerHTML = '';
+                
+                Object.keys(this.wallets).forEach(wallet => {
+                    const walletName = wallet.charAt(0).toUpperCase() + wallet.slice(1);
+                    
+                    const fromOption = document.createElement('option');
+                    fromOption.value = wallet;
+                    fromOption.textContent = walletName;
+                    fromSelect.appendChild(fromOption);
+                    
+                    const toOption = document.createElement('option');
+                    toOption.value = wallet;
+                    toOption.textContent = walletName;
+                    toSelect.appendChild(toOption);
+                });
+                
+                // Restore previous selections if they still exist
+                if (this.wallets[currentFrom]) fromSelect.value = currentFrom;
+                if (this.wallets[currentTo]) toSelect.value = currentTo;
+                
+                // Make sure from and to are different
+                if (fromSelect.value === toSelect.value && Object.keys(this.wallets).length > 1) {
+                    const options = Object.keys(this.wallets);
+                    toSelect.value = options.find(w => w !== fromSelect.value);
+                }
+            }
+
+            updateNodeWalletDisplay() {
+                const container = document.getElementById('nodeWalletsContainer');
+                container.innerHTML = '';
+                
+                Object.keys(this.nodeWallets).forEach(nodeWallet => {
+                    const nodeWalletDiv = document.createElement('div');
+                    nodeWalletDiv.className = 'wallet';
+                    nodeWalletDiv.style.background = 'rgba(255, 215, 0, 0.2)';
+                    nodeWalletDiv.style.borderColor = '#ffd700';
+                    
+                    const nodeId = nodeWallet.replace('node', '');
+                    const balance = this.nodeWallets[nodeWallet].toFixed(6);
+                    
+                    nodeWalletDiv.innerHTML = `
+                        <span>Node ${nodeId}:</span>
+                        <span>${balance} BTC</span>
+                    `;
+                    
+                    container.appendChild(nodeWalletDiv);
+                });
+            }
+
+            updateStats() {
+                document.getElementById('blockHeight').textContent = this.blockHeight;
+                document.getElementById('difficulty').textContent = this.difficulty;
+                document.getElementById('hashRate').textContent = this.hashRate.toFixed(1) + ' TH/s';
+                
+                const circulating = Object.values(this.wallets).reduce((sum, balance) => sum + balance, 0);
+                const nodeMined = Object.values(this.nodeWallets).reduce((sum, balance) => sum + balance, 0);
+                const totalSupply = circulating + nodeMined;
+                
+                document.getElementById('circulating').textContent = circulating.toFixed(2);
+                document.getElementById('totalSupply').textContent = totalSupply.toFixed(2);
+
+                // 👇 new part
+                if (this.nodes.length > 0) {
+                    const avgConnections = this.nodes.reduce((sum, n) => sum + n.peers.length, 0) / this.nodes.length;
+                    document.getElementById('avgConnections').textContent = avgConnections.toFixed(1);
+                }
+            }
+
+
+            updateMempoolDisplay() {
+                const container = document.getElementById('mempoolTransactions');
+                
+                if (this.mempool.length === 0) {
+                    container.innerHTML = '<p>No pending transactions</p>';
+                    return;
+                }
+                
+                let html = `<p><strong>${this.mempool.length} transactions waiting</strong></p>`;
+                this.mempool.forEach(tx => {
+                    html += `
+                        <div class="transaction">
+                            ${tx.from} → ${tx.to}: ${tx.amount} BTC
+                            <br><small>Fee: ${tx.fee} BTC | ID: ${tx.id.substring(0, 8)}...</small>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            }
+
+            increaseDifficulty() {
+                if (this.difficulty < 8) {
+                    this.difficulty++;
+                    this.hashRate = Math.random() * 2 + 1.5;
+                    this.updateStats();
+                    console.log(`Difficulty increased to: ${this.difficulty}`);
+                } else {
+                    alert('Maximum difficulty reached (8)');
+                }
+            }
+
+            decreaseDifficulty() {
+                if (this.difficulty > 1) {
+                    this.difficulty--;
+                    this.hashRate = Math.random() * 1 + 0.5;
+                    this.updateStats();
+                    console.log(`Difficulty decreased to: ${this.difficulty}`);
+                } else {
+                    alert('Minimum difficulty reached (1)');
+                }
+            }
+
+            generateNewWallet() {
+                const walletNames = [
+                    'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Iris', 'Jack',
+                    'Kate', 'Leo', 'Maya', 'Nick', 'Olivia', 'Paul', 'Quinn', 'Rose',
+                    'Sam', 'Tina', 'Uma', 'Victor', 'Wendy', 'Xander', 'Yara', 'Zoe',
+                    'Crypto', 'Satoshi', 'Vitalik', 'Hal', 'Dorian', 'Gavin', 'Andreas',
+                    'Lightning', 'Block', 'Hash', 'Node', 'Miner', 'Hodler', 'Whale'
+                ];
+                
+                const usedNames = Object.keys(this.wallets);
+                const availableNames = walletNames.filter(name => 
+                    !usedNames.includes(name.toLowerCase())
+                );
+                
+                if (availableNames.length === 0) {
+                    // Generate random wallet if all predefined names are used
+                    const randomId = Math.random().toString(36).substring(2, 8);
+                    const newWalletName = `wallet_${randomId}`;
+                    this.addNewWallet(newWalletName);
+                    return;
+                }
+                
+                const randomName = availableNames[Math.floor(Math.random() * availableNames.length)];
+                this.addNewWallet(randomName.toLowerCase());
+            }
+
+            addNewWallet(walletName) {
+                // New wallets start with random amount between 0-50 BTC
+                const initialBalance = Math.floor(Math.random() * 50);
+                
+                this.wallets[walletName] = initialBalance;
+                this.pendingBalances[walletName] = 0;
+                
+                this.updateWalletDisplay();
+                this.updateTransactionSelects();
+                
+                console.log(`New wallet created: ${walletName} with ${initialBalance} BTC`);
+                
+                // Show notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; z-index: 1000;
+                    background: linear-gradient(45deg, #00ff88, #00ccff);
+                    color: white; padding: 15px; border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+                    animation: slideIn 0.5s ease-out;
+                `;
+                notification.innerHTML = `
+                    🆕 <strong>New Wallet Created!</strong><br>
+                    ${walletName.charAt(0).toUpperCase() + walletName.slice(1)}: ${initialBalance}.00 BTC
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.5s ease-out';
+                    setTimeout(() => notification.remove(), 500);
+                }, 3000);
+            }
+
+            addNewNode() {
+                const newNodeId = this.nodeIdCounter;
+                const newNodeWalletKey = `node${newNodeId}`;
+                
+                // Create new node with random position
+                const containerRect = document.getElementById('networkContainer').getBoundingClientRect();
+                const margin = 100;
+                const newNode = {
+                    id: newNodeId,
+                    blockchain: [...this.nodes[0].blockchain], // Copy current blockchain
+                    position: {
+                        x: Math.random() * (containerRect.width - 2 * margin - 80) + margin,
+                        y: Math.random() * (containerRect.height - 2 * margin - 80) + margin
+                    },
+                    peers: [],
+                    isMining: false
+                };
+                
+                // Add to nodes array
+                this.nodes.push(newNode);
+                
+                // Create wallet for new node
+                this.nodeWallets[newNodeWalletKey] = 0.0;
+                this.nodePendingBalances[newNodeWalletKey] = 0;
+                
+                // Create visual node element
+                this.createNodeElement(newNode);
+                
+                // Connect to ~log(numNodes) peers (Bitcoin-like behavior)
+                const existingNodeIds = this.nodes.slice(0, -1).map(n => n.id); // exclude new node
+                let numConnections = Math.floor(Math.log2(this.nodes.length));
+
+                // Clamp between 2 and available nodes
+                numConnections = Math.max(2, Math.min(numConnections, existingNodeIds.length));
+
+                const connectionsToMake = [];
+
+                for (let i = 0; i < numConnections; i++) {
+                    let randomNodeId;
+                    do {
+                        randomNodeId = existingNodeIds[Math.floor(Math.random() * existingNodeIds.length)];
+                    } while (connectionsToMake.includes(randomNodeId));
+
+                    connectionsToMake.push(randomNodeId);
+                    this.connectNodes(newNodeId, [randomNodeId]);
+                }
+
+
+                
+                // Update displays
+                this.updateNodeWalletDisplay();
+                this.updateNetworkTitle();
+                this.nodeIdCounter++;
+                
+                console.log(`New node ${newNodeId} added to network with ${numConnections} connections`);
+                
+                // Show notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed; top: 170px; right: 20px; z-index: 1000;
+                    background: linear-gradient(45deg, #ffd700, #ff8c00);
+                    color: white; padding: 15px; border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+                    animation: slideIn 0.5s ease-out;
+                `;
+                notification.innerHTML = `
+                    ⚡ <strong>New Node Added!</strong><br>
+                    Node ${newNodeId} joined the network<br>
+                    <small>Connected to ${numConnections} peers</small>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.5s ease-out';
+                    setTimeout(() => notification.remove(), 500);
+                }, 4000);
+                
+                return newNodeId;
+            }
+
+            updateNetworkTitle() {
+                const nodeCount = this.nodes.length;
+                document.getElementById('networkTitle').textContent = `🌐 Network Topology (${nodeCount} Nodes)`;
+            }
+
+            fitNodesToScreen() {
+                const container = document.getElementById('networkContainer');
+                const containerRect = container.getBoundingClientRect();
+                
+                if (this.nodes.length === 0) return;
+                
+                // Get current positions of all nodes
+                let minX = Infinity, maxX = -Infinity;
+                let minY = Infinity, maxY = -Infinity;
+                
+                this.nodes.forEach(node => {
+                    minX = Math.min(minX, node.position.x);
+                    maxX = Math.max(maxX, node.position.x + 60); // 60px node width
+                    minY = Math.min(minY, node.position.y);
+                    maxY = Math.max(maxY, node.position.y + 60); // 60px node height
+                });
+                
+                // Calculate current bounds
+                const currentWidth = maxX - minX;
+                const currentHeight = maxY - minY;
+                
+                // Available space (with margins)
+                const availableWidth = containerRect.width - 120; // 60px margin on each side
+                const availableHeight = containerRect.height - 120; // 60px margin top/bottom
+                
+                // Calculate scaling factors
+                const scaleX = currentWidth > 0 ? availableWidth / currentWidth : 1;
+                const scaleY = currentHeight > 0 ? availableHeight / currentHeight : 1;
+                const scale = Math.min(scaleX, scaleY, 1); // Don't make larger, only smaller
+                
+                // Calculate offset to center
+                const newWidth = currentWidth * scale;
+                const newHeight = currentHeight * scale;
+                const offsetX = (availableWidth - newWidth) / 2 + 60 - minX * scale;
+                const offsetY = (availableHeight - newHeight) / 2 + 60 - minY * scale;
+                
+                // Update node positions
+                this.nodes.forEach(node => {
+                    node.position.x = node.position.x * scale + offsetX;
+                    node.position.y = node.position.y * scale + offsetY;
+                    
+                    // Update visual element
+                    const nodeEl = document.getElementById(`node-${node.id}`);
+                    if (nodeEl) {
+                        nodeEl.style.left = node.position.x + 'px';
+                        nodeEl.style.top = node.position.y + 'px';
+                        nodeEl.style.transition = 'all 0.8s ease-out';
+                    }
+                });
+                
+                // Redraw connections with new positions
+                setTimeout(() => {
+                    this.redrawConnections();
+                    // Remove transitions after animation
+                    this.nodes.forEach(node => {
+                        const nodeEl = document.getElementById(`node-${node.id}`);
+                        if (nodeEl) {
+                            nodeEl.style.transition = 'all 0.3s ease';
+                        }
+                    });
+                }, 100);
+                
+                console.log(`Fitted ${this.nodes.length} nodes to screen with scale: ${scale.toFixed(2)}`);
+            }
+
+            redrawConnections() {
+                // Remove existing connections
+                const connections = document.querySelectorAll('.connection');
+                connections.forEach(conn => conn.remove());
+                
+                // Redraw all connections using a Set to avoid duplicates
+                const drawnConnections = new Set();
+                
+                this.nodes.forEach(node => {
+                    node.peers.forEach(peerId => {
+                        // Create a unique identifier for this connection (sorted to avoid duplicates)
+                        const connectionId = [node.id, peerId].sort((a, b) => a - b).join('-');
+                        
+                        // Only draw each connection once
+                        if (!drawnConnections.has(connectionId)) {
+                            this.createConnection(node.id, peerId);
+                            drawnConnections.add(connectionId);
+                        }
+                    });
+                });
+                
+                console.log(`Redrawn ${drawnConnections.size} connections`);
+            }
+
+            startRandomSystem() {
+                if (this.isAutoSystem) {
+                    alert('Auto system is already running!');
+                    return;
+                }
+                
+                this.isAutoSystem = true;
+                document.getElementById('randomSystemBtn').textContent = '🔄 Auto Running...';
+                document.getElementById('randomSystemBtn').style.background = 'linear-gradient(45deg, #00ff88, #00ccff)';
+                
+                this.runRandomCycle();
+                console.log('🎲 Auto system started - creating random transactions and mining!');
+            }
+
+            stopRandomSystem() {
+                this.isAutoSystem = false;
+                document.getElementById('randomSystemBtn').textContent = '🎲 Start Auto System';
+                document.getElementById('randomSystemBtn').style.background = 'linear-gradient(45deg, #ff6b6b, #ffa500)';
+                
+                if (this.randomSystemTimeout) {
+                    clearTimeout(this.randomSystemTimeout);
+                }
+                
+                console.log('⏹️ Auto system stopped');
+            }
+
+            async runRandomCycle() {
+                if (!this.isAutoSystem) return;
+
+                // Create 1-4 random transactions
+                const numTransactions = Math.floor(Math.random() * 4) + 1;
+                const walletKeys = Object.keys(this.wallets);
+                
+                if (walletKeys.length >= 2) {
+                    for (let i = 0; i < numTransactions; i++) {
+                        // Add small delay between transactions
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                        
+                        const fromWallet = walletKeys[Math.floor(Math.random() * walletKeys.length)];
+                        let toWallet = walletKeys[Math.floor(Math.random() * walletKeys.length)];
+                        
+                        // Make sure from and to are different
+                        while (toWallet === fromWallet && walletKeys.length > 1) {
+                            toWallet = walletKeys[Math.floor(Math.random() * walletKeys.length)];
+                        }
+                        
+                        // Random amount between 0.1 and 10 BTC
+                        const amount = (Math.random() * 9.9 + 0.1).toFixed(2);
+                        
+                        // Only create transaction if sender has enough balance
+                        const estimatedFee = 0.0001 * Math.max(1, this.mempool.length / 5);
+                        if (this.wallets[fromWallet] + this.pendingBalances[fromWallet] >= parseFloat(amount) + estimatedFee) {
+                            this.createTransaction(fromWallet, toWallet, amount);
+                        }
+                    }
+                }
+                
+                // Wait a bit for transactions to propagate
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Start mining if there are transactions
+                if (this.mempool.length > 0 && !this.isMining) {
+                    await this.startMining();
+                }
+                
+                // Schedule next cycle
+                if (this.isAutoSystem) {
+                    const baseDelay = this.deltaTime * 1000; // Convert to milliseconds
+                    const randomVariation = (Math.random() - 0.5) * baseDelay * 0.4; // ±20% variation
+                    const nextCycleDelay = Math.max(1000, baseDelay + randomVariation); // Minimum 1 second
+                    
+                    this.randomSystemTimeout = setTimeout(() => this.runRandomCycle(), nextCycleDelay);
+                }
+            }
+        }
+
+        // Global simulator instance
+        let simulator;
+
+        // Initialize when page loads
+        window.onload = function() {
+            simulator = new BitcoinSimulator();
+        };
+
+        // UI Functions
+        function createTransaction() {
+            const from = document.getElementById('fromWallet').value;
+            const to = document.getElementById('toWallet').value;
+            const amount = document.getElementById('amount').value;
+            
+            if (from === to) {
+                alert('Cannot send to yourself!');
+                return;
+            }
+            
+            simulator.createTransaction(from, to, amount);
+        }
+
+        function startMining() {
+            simulator.startMining();
+        }
+
+        function showNodeInfo() {
+            const nodeId = Math.floor(Math.random() * 7);
+            simulator.showBlockchain(nodeId);
+        }
+
+        function increaseDifficulty() {
+            simulator.increaseDifficulty();
+        }
+
+        function decreaseDifficulty() {
+            simulator.decreaseDifficulty();
+        }
+
+        function generateNewWallet() {
+            simulator.generateNewWallet();
+        }
+
+        function startRandomSystem() {
+            simulator.startRandomSystem();
+        }
+
+        function stopRandomSystem() {
+            simulator.stopRandomSystem();
+        }
+
+        function updateDelta(value) {
+            simulator.deltaTime = parseFloat(value);
+            document.getElementById('deltaValue').textContent = parseFloat(value).toFixed(1);
+            
+            // Update slider color based on speed
+            const slider = document.getElementById('deltaSlider');
+            const percentage = (value - 1) / (20 - 1) * 100;
+            
+            if (value <= 5) {
+                // Fast: Green to Yellow gradient
+                slider.style.background = `linear-gradient(90deg, #00ff88 0%, #ffff00 ${percentage}%, #333 ${percentage}%)`;
+            } else if (value <= 10) {
+                // Medium: Yellow to Orange gradient  
+                slider.style.background = `linear-gradient(90deg, #ffff00 0%, #ffa500 ${percentage}%, #333 ${percentage}%)`;
+            } else {
+                // Slow: Orange to Red gradient
+                slider.style.background = `linear-gradient(90deg, #ffa500 0%, #ff6b6b ${percentage}%, #333 ${percentage}%)`;
+            }
+            
+            console.log(`Auto system speed updated: ${value}s interval`);
+        }
+
+        function addNewNode() {
+            simulator.addNewNode();
+        }
+        function addMultipleNodes(count) {
+            for (let i = 0; i < count; i++) {
+                simulator.addNewNode();
+            }
+            simulator.fitNodesToScreen(); // optional: auto-fit after adding many
+        }
+
+        function fitNodesToScreen() {
+            simulator.fitNodesToScreen();
+        }
+
+        function updateNetworkHeight(value) {
+            const height = parseInt(value);
+            const networkContainer = document.getElementById('networkContainer');
+            networkContainer.style.height = height + 'px';
+            
+            document.getElementById('heightValue').textContent = height;
+            
+            // Update slider color based on height
+            const slider = document.getElementById('heightSlider');
+            const percentage = (value - 200) / (800 - 200) * 100;
+            
+            if (value <= 350) {
+                // Compact: Teal to Green gradient
+                slider.style.background = `linear-gradient(90deg, #4ecdc4 0%, #00ff88 ${percentage}%, #333 ${percentage}%)`;
+            } else if (value <= 550) {
+                // Medium: Green to Blue gradient  
+                slider.style.background = `linear-gradient(90deg, #00ff88 0%, #44a08d ${percentage}%, #333 ${percentage}%)`;
+            } else {
+                // Large: Blue to Purple gradient
+                slider.style.background = `linear-gradient(90deg, #44a08d 0%, #667eea ${percentage}%, #333 ${percentage}%)`;
+            }
+            
+            // Auto-fit nodes to new container size after a short delay
+            setTimeout(() => {
+                if (simulator && simulator.nodes.length > 0) {
+                    simulator.fitNodesToScreen();
+                }
+            }, 100);
+            
+            console.log(`Network height updated to: ${height}px`);
+        }
+
+        function showNodeConnections() {
+            simulator.showNodeConnections();
+        }
+
+        function closeBlockInfo() {
+            document.getElementById('blockInfo').style.display = 'none';
+        }
+
+        function showBlockDetails(nodeId, blockIndex) {
+            const block = simulator.nodes[nodeId].blockchain[blockIndex];
+            const content = document.getElementById('blockInfoContent');
+            
+            let html = `
+                <h3>Block ${block.index} Details</h3>
+                <p><strong>Hash:</strong> ${block.hash || 'Genesis'}</p>
+                <p><strong>Previous Hash:</strong> ${block.previousHash}</p>
+                <p><strong>Merkle Root:</strong> ${block.merkleRoot}</p>
+                <p><strong>Timestamp:</strong> ${new Date(block.timestamp).toLocaleString()}</p>
+                <p><strong>Nonce:</strong> ${block.nonce}</p>
+                <p><strong>Difficulty:</strong> ${block.difficulty}</p>
+                ${block.miner ? `<p><strong>Miner:</strong> ${block.miner}</p>` : ''}
+                <h4>Transactions (${block.transactions.length}):</h4>
+                <div style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px;">
+            `;
+            
+            block.transactions.forEach(tx => {
+                html += `
+                    <div style="margin-bottom: 10px; padding: 8px; background: rgba(0,255,136,0.1); border-radius: 4px;">
+                        <strong>ID:</strong> ${tx.id}<br>
+                        <strong>From:</strong> ${tx.from} <strong>To:</strong> ${tx.to}<br>
+                        <strong>Amount:</strong> ${tx.amount} BTC <strong>Fee:</strong> ${tx.fee || 0} BTC<br>
+                        <strong>Time:</strong> ${new Date(tx.timestamp).toLocaleString()}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        // Auto-start demo with immediate activity
+        setTimeout(() => {
+            if (simulator) {
+                // Create initial transactions
+                simulator.createTransaction('alice', 'bob', 5.5);
+                simulator.createTransaction('toon', 'jerry', 3.2);
+                simulator.createTransaction('bob', 'alice', 2.1);
+                
+                // Start auto system immediately for continuous activity
+                setTimeout(() => {
+                    simulator.startRandomSystem();
+                    
+                    // Show welcome message
+                    const welcomeNotification = document.createElement('div');
+                    welcomeNotification.style.cssText = `
+                        position: fixed; top: 120px; right: 20px; z-index: 1000;
+                        background: linear-gradient(45deg, #00ff88, #ff6b6b);
+                        color: white; padding: 15px; border-radius: 8px;
+                        box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+                        animation: slideIn 0.5s ease-out; max-width: 300px;
+                    `;
+                    welcomeNotification.innerHTML = `
+                        🚀 <strong>Simulation Started!</strong><br>
+                        Watch nodes mine blocks and earn Bitcoin!<br>
+                        <small>Adjust speed with Δt slider above</small>
+                    `;
+                    
+                    document.body.appendChild(welcomeNotification);
+                    
+                    setTimeout(() => {
+                        welcomeNotification.style.animation = 'slideOut 0.5s ease-out';
+                        setTimeout(() => welcomeNotification.remove(), 500);
+                    }, 5000);
+                    
+                }, 1000);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

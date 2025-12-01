@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHA256 Hash Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .output-group {
+            margin-bottom: 30px;
+        }
+
+        .hash-output {
+            background: #2d3748;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            word-break: break-all;
+            line-height: 1.6;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            border: 2px solid #4a5568;
+            transition: all 0.3s ease;
+        }
+
+        .hash-output:hover {
+            border-color: #68d391;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .copy-btn:hover {
+            background: #5a67d8;
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .info-section {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+        }
+
+        .info-section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-section p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .example {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .example:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .example-text {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .example-desc {
+            font-size: 0.9em;
+            color: #718096;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #718096;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .examples {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SHA256 Hash Demo</h1>
+        <p class="subtitle">Enter any text below to generate its SHA256 hash in real-time</p>
+        
+        <div class="input-group">
+            <label for="inputText">Input Text:</label>
+            <textarea 
+                id="inputText" 
+                placeholder="Type or paste your text here..."
+                autocomplete="off"
+                spellcheck="false"
+            >Hello, World!</textarea>
+        </div>
+
+        <div class="output-group">
+            <label>SHA256 Hash:</label>
+            <div class="hash-output" id="hashOutput">
+                <span id="hashText">Type something to see the hash...</span>
+                <button class="copy-btn" id="copyBtn" onclick="copyHash()">Copy</button>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>About SHA256</h3>
+            <p>SHA256 (Secure Hash Algorithm 256-bit) is a cryptographic hash function that produces a fixed-size 256-bit (32-byte) hash. It's part of the SHA-2 family and is widely used in security applications and protocols.</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="inputLength">13</div>
+                    <div class="stat-label">Input Characters</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">64</div>
+                    <div class="stat-label">Hash Characters</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="hashTime">0</div>
+                    <div class="stat-label">Hash Time (ms)</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 25px;">Try These Examples:</h3>
+            <div class="examples">
+                <div class="example" onclick="setExample('Hello, World!')">
+                    <div class="example-text">Hello, World!</div>
+                    <div class="example-desc">Classic greeting</div>
+                </div>
+                <div class="example" onclick="setExample('')">
+                    <div class="example-text">(Empty String)</div>
+                    <div class="example-desc">Hash of nothing</div>
+                </div>
+                <div class="example" onclick="setExample('The quick brown fox jumps over the lazy dog')">
+                    <div class="example-text">Pangram</div>
+                    <div class="example-desc">Contains all letters</div>
+                </div>
+                <div class="example" onclick="setExample('12345')">
+                    <div class="example-text">12345</div>
+                    <div class="example-desc">Simple numbers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputText = document.getElementById('inputText');
+        const hashOutput = document.getElementById('hashOutput');
+        const hashText = document.getElementById('hashText');
+        const inputLength = document.getElementById('inputLength');
+        const hashTime = document.getElementById('hashTime');
+
+        // Generate SHA256 hash using Web Crypto API
+        async function generateSHA256(text) {
+            const startTime = performance.now();
+            
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            
+            const endTime = performance.now();
+            const timeTaken = (endTime - startTime).toFixed(2);
+            
+            return { hash: hashHex, time: timeTaken };
+        }
+
+        // Update hash when input changes
+        async function updateHash() {
+            const text = inputText.value;
+            inputLength.textContent = text.length;
+            
+            if (text === '') {
+                hashText.textContent = 'Type something to see the hash...';
+                hashTime.textContent = '0';
+                return;
+            }
+
+            try {
+                const result = await generateSHA256(text);
+                hashText.textContent = result.hash;
+                hashTime.textContent = result.time;
+            } catch (error) {
+                hashText.textContent = 'Error generating hash';
+                hashTime.textContent = '0';
+            }
+        }
+
+        // Copy hash to clipboard
+        function copyHash() {
+            const hash = hashText.textContent;
+            if (hash && hash !== 'Type something to see the hash...' && hash !== 'Error generating hash') {
+                navigator.clipboard.writeText(hash).then(() => {
+                    const copyBtn = document.getElementById('copyBtn');
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    copyBtn.style.background = '#48bb78';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                        copyBtn.style.background = '#667eea';
+                    }, 1500);
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+            }
+        }
+
+        // Set example text
+        function setExample(text) {
+            inputText.value = text;
+            updateHash();
+            inputText.focus();
+        }
+
+        // Event listeners
+        inputText.addEventListener('input', updateHash);
+        inputText.addEventListener('paste', () => setTimeout(updateHash, 10));
+
+        // Initialize with default text
+        updateHash();
+
+        // Add some visual feedback when typing
+        let typingTimer;
+        inputText.addEventListener('input', () => {
+            clearTimeout(typingTimer);
+            hashOutput.style.opacity = '0.6';
+            typingTimer = setTimeout(() => {
+                hashOutput.style.opacity = '1';
+            }, 300);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <title>Anton Agafonov</title>
+
+  <meta name="author" content="Anton Agafonov">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="images/favicon/favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Lato', Verdana, Helvetica, sans-serif;
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .name {
+      font-size: 32px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .papertitle {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .highlight {
+      background-color: #ffffd0;
+    }
+
+    .colored-box {
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      margin: 5px;
+    }
+
+    .colored-box h2 {
+      margin: 0;
+      color: white;
+      font-size: 16px;
+    }
+
+    .one {
+      position: relative;
+    }
+
+    .two {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .one:hover .two {
+      opacity: 1;
+    }
+
+    a {
+      color: #1772d0;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #f09228;
+    }
+  </style>
+</head>
+
+<body>
+  <table
+    style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+    <tbody>
+      <tr style="padding:0px">
+        <td style="padding:0px">
+          <table
+            style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+              <tr style="padding:0px">
+                <td style="padding:2.5%;width:63%;vertical-align:middle">
+                  <p class="name" style="text-align: center;">
+                    Anton Agafonov
+                  </p>
+                  <p style="text-align:justify;">
+                    I'm an AI Engineer and Team Lead at Bosch Corporate Research, developing multimodal,
+                    perception-based policies for real-time robotic systems.
+                    I translate scene understanding into actionable outputs for autonomous decision making, leveraging
+                    state-of-the-art models including diffusion-based policies and Vision-Language-Action (VLA/VLM)
+                    models.
+                    I built a multimodal vision-action diffusion policy from scratch, featuring attention-based
+                    perception encoders that fuse proprioception with dual egocentric camera data for real-time robotic
+                    manipulation and assembly.
+                    I have adapted foundation VLA models (SmolVLA, Pi0.5) through targeted dataset collection and
+                    fine-tuning using open-source frameworks.
+                    My work includes developing real-time algorithms for 6D pose estimation from mono-RGB input,
+                    integrating advanced vision models (SAM2, MegaPose) into scalable industrial workflows.
+                    I stay continuously up-to-date with recent research in multimodal AI and robotics, ensuring my work
+                    incorporates the latest advancements.
+                    My multidisciplinary background in both AI and Mechanical Engineering R&D provides a unique
+                    systems-level understanding, enhancing my contributions to the team.
+                  </p>
+                  <p style="text-align:center">
+                    <a href="mailto:toonagafonov@gmail.com">Email</a> &nbsp;/&nbsp;
+                    <a href="papers/Anton_Agafonov_CV.pdf" target="_blank">CV</a> &nbsp;/&nbsp;
+                    <a href="https://www.linkedin.com/in/anton-agafonov/">LinkedIn</a> &nbsp;/&nbsp;
+                    <a href="https://github.com/antonagafonov">Github</a>
+                  </p>
+                </td>
+                <td style="padding:2.5%;width:37%;max-width:37%">
+                  <img style="width:100%;max-width:100%;object-fit: cover; border-radius: 50%;" alt="profile photo"
+                    src="images/cropped_profile_photo2.png" class="hoverZoomLink">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table
+            style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+              <tr>
+                <td style="padding:16px;width:100%;vertical-align:middle">
+                  <h2>Projects</h2>
+                  <p>
+                    Here are some of my research projects and technical work.
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table
+            style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+
+              <!-- IndustRoPose Project -->
+              <tr onmouseout="industropose_stop()" onmouseover="industropose_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='industropose_image'>
+                      <img src='images/IndustroBot.JPG' width="160">
+                    </div>
+                    <img src='images/IndustroBot.JPG' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function industropose_start() {
+                      document.getElementById('industropose_image').style.opacity = "1";
+                    }
+                    function industropose_stop() {
+                      document.getElementById('industropose_image').style.opacity = "0";
+                    }
+                    industropose_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="https://sherhazan.github.io/IndustRoPose/">
+                    <span class="papertitle">IndustRoPose: Industrial Robotic Pose Estimation</span>
+                  </a>
+                  <br>
+                  <em>Bosch Corporate Research</em>, 2024-2025
+                  <br>
+                  <a href="https://sherhazan.github.io/IndustRoPose/">Project Page</a>
+                  <p></p>
+                  <p>
+                    Real-time 6D pose estimation system for industrial robotic manipulation and assembly tasks, enabling
+                    perception-based policies for automated insertion and assembly operations.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Diffusion Policy Insertion Project -->
+              <tr onmouseout="diffusion_insertion_stop()" onmouseover="diffusion_insertion_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='diffusion_insertion_image'>
+                      <img src='images/diffusion_insertion.png' width="160">
+                    </div>
+                    <img src='images/diffusion_insertion.png' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function diffusion_insertion_start() {
+                      document.getElementById('diffusion_insertion_image').style.opacity = "1";
+                    }
+                    function diffusion_insertion_stop() {
+                      document.getElementById('diffusion_insertion_image').style.opacity = "0";
+                    }
+                    diffusion_insertion_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <span class="papertitle">Robotic Insertion with Diffusion Policy</span>
+                  <br>
+                  <em>Bosch Corporate Research</em>, 2024-2025
+                  <br>
+                  <a href="https://diffusion-policy.cs.columbia.edu/">Original Paper</a> &nbsp;/&nbsp;
+                  <a href="videos/diffusion_inserion.mp4" target="_blank">Video</a>
+                  <p></p>
+                  <p>
+                    Implementation and adaptation of the Diffusion Policy framework for real-time robotic insertion
+                    tasks using a UR5e cobot. The project demonstrates the application of diffusion-based imitation
+                    learning to precision manipulation, translating the original framework to industrial assembly
+                    scenarios with closed-loop visuomotor control.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- STMPL Project -->
+              <tr onmouseout="stmpl_stop()" onmouseover="stmpl_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='stmpl_image'>
+                      <img src='images/STMPL-banner.png' width="160">
+                    </div>
+                    <img src='images/STMPL-banner.png' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function stmpl_start() {
+                      document.getElementById('stmpl_image').style.opacity = "1";
+                    }
+                    function stmpl_stop() {
+                      document.getElementById('stmpl_image').style.opacity = "0";
+                    }
+                    stmpl_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="https://antonagafonov.github.io/STMPL/">
+                    <span class="papertitle">STMPL: Human Body Soft Tissue Deformation Deep Learning Simulation</span>
+                  </a>
+                  <br>
+                  <em>M.Sc Research Thesis, Technion</em>, 2024
+                  <br>
+                  <a href="https://antonagafonov.github.io/STMPL/">Project Page</a> &nbsp;/&nbsp;
+                  <a href="https://arxiv.org/abs/2403.08344" target="_blank">Paper</a>
+                  <p></p>
+                  <p>
+                    Developed the STMPL model, an enhanced version of the SMPL model for realistic simulation of human
+                    soft tissue deformations optimized for real-time applications. The model maps 3D body data to 2D UV
+                    maps for efficient processing using a UNET-based architecture, achieving real-time inference speeds
+                    of 2ms with FEM-level accuracy while generalizing on unseen shapes and thicknesses.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Autonomous Car Project -->
+              <tr onmouseout="autonomus_car_stop()" onmouseover="autonomus_car_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='autonomus_car_image'>
+                      <img src='images/car_banner.png' width="160">
+                    </div>
+                    <img src='images/car_banner.png' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function autonomus_car_start() {
+                      document.getElementById('autonomus_car_image').style.opacity = "1";
+                    }
+                    function autonomus_car_stop() {
+                      document.getElementById('autonomus_car_image').style.opacity = "0";
+                    }
+                    autonomus_car_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="https://github.com/antonagafonov/autonomus_car">
+                    <span class="papertitle">Autonomous Car</span>
+                  </a>
+
+                  <em>Autonomous Vehicle Project</em>
+                  <br>
+                  <a href="https://github.com/antonagafonov/autonomus_car">Github</a> &nbsp;/&nbsp;
+                  <a href="images/full_circle.mp4" target="_blank">Video</a>
+                  <p></p>
+                  Autonomous vehicle control and navigation system with computer vision and machine learning components
+                  for real-time decision making and path planning.
+                  </p>
+                  <ul>
+                    <li><strong>PS4 Controller Integration:</strong> Manual control interface for data collection and
+                      system override capabilities</li>
+                    <li><strong>PID-Based Data Collection:</strong> Precision control system for gathering high-quality
+                      training datasets with consistent vehicle dynamics</li>
+                    <li><strong>PID-Based Autonomous Drive:</strong> Traditional control algorithm implementation for
+                      baseline autonomous navigation and comparison benchmarking</li>
+                    <li><strong>Trained CNN-Based Autonomous Policy:</strong> Deep learning approach using convolutional
+                      neural networks for end-to-end autonomous driving decisions</li>
+                    <li><strong>Jetson Nano Implementation:</strong> Currently developing and optimizing the system for
+                      deployment on NVIDIA Jetson Nano edge computing platform</li>
+                    <li><strong>ROS2 Integration:</strong> Implementing the entire system architecture using ROS2 for
+                      modular, scalable, and distributed autonomous vehicle control</li>
+
+                  </ul>
+                </td>
+              </tr>
+
+              <!-- Autonomous Car Jetson NX Project -->
+              <tr onmouseout="autonomus_car_stop()" onmouseover="autonomus_car_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='autonomus_car_image'>
+                      <img src='images/jetson3.jpeg' width="160">
+                    </div>
+                    <img src='images/jetson3.jpeg' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function autonomus_car_start() {
+                      document.getElementById('autonomus_car_image').style.opacity = "1";
+                    }
+                    function autonomus_car_stop() {
+                      document.getElementById('autonomus_car_image').style.opacity = "0";
+                    }
+                    autonomus_car_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="https://github.com/antonagafonov/autonomous-car-jetson-nx">
+                    <span class="papertitle">Autonomous Car - Jetson Xavier NX</span>
+                  </a>
+                  <br>
+                  <em>ROS2-based Autonomous Vehicle Project</em>
+                  <br>
+                  <a href="https://github.com/antonagafonov/autonomous-car-jetson-nx">Github</a> &nbsp;/&nbsp;
+                  <a href="https://github.com/antonagafonov/autonomus_car">Original Version</a> &nbsp;/&nbsp;
+                  <a href="images/car_behavior_video_example.mp4" download="car_behavior_video.mp4">Video</a>
+                  <p></p>
+                  <p>
+                    Comprehensive autonomous vehicle project built with ROS2 Foxy on NVIDIA Jetson Xavier NX,
+                    transforming a basic RC car into an intelligent autonomous vehicle with real-time control and
+                    expandable architecture.
+                  </p>
+                  <p><strong>Key Features:</strong></p>
+                  <ul>
+                    <li><strong>Hardware Platform:</strong> NVIDIA Jetson Xavier NX for high-performance edge computing
+                      with differential drive motor control</li>
+                    <li><strong>ROS2 Architecture:</strong> Modular design using ROS2 Foxy with clean package structure
+                      for easy expansion and development</li>
+                    <li><strong>Manual Control:</strong> Bluetooth joystick teleoperation with Xbox/PS4 controller
+                      support and customizable control mapping</li>
+                    <li><strong>Safety Systems:</strong> Emergency stop functionality, speed limiting, mode switching,
+                      and comprehensive safety protocols</li>
+                    <li><strong>Real-time Performance:</strong> Low-latency control loop for responsive driving with
+                      hardware PWM control</li>
+                    <li><strong>Future Integration:</strong> Planned camera integration, lane detection, autonomous
+                      navigation, and obstacle avoidance capabilities</li>
+                  </ul>
+                  <p><strong>Technical Implementation:</strong> The system uses precise PWM-based differential drive
+                    control, comprehensive parameter configuration, and robust command routing with topics for joystick
+                    input, manual control commands, and final motor commands.</p>
+                </td>
+              </tr>
+
+              <tr onmouseout="blockchain_stop()" onmouseover="blockchain_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='blockchain_image'>
+                      <img src='images/blockchain_banner.JPG' width="160">
+                    </div>
+                    <img src='images/blockchain_banner.JPG' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function blockchain_start() {
+                      document.getElementById('blockchain_image').style.opacity = "1";
+                    }
+                    function blockchain_stop() {
+                      document.getElementById('blockchain_image').style.opacity = "0";
+                    }
+                    blockchain_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="https://antonagafonov.github.io/blockchain_network_simulation.github.io/">
+                    <span class="papertitle">Bitcoin Blockchain Simulation</span>
+                  </a>
+                  <br>
+                  <em>Blockchain Technology Demo</em>
+                  <br>
+                  <a href="https://antonagafonov.github.io/blockchain_network_simulation.github.io/">Demo</a>
+                  <p></p>
+                  <p>
+                    A toy example of a Bitcoin Blockchain Simulator designed to be an interactive and educational web
+                    application. It visually demonstrates the fundamental principles of a cryptocurrency network with
+                    multiple nodes.
+                  </p>
+                  <p><strong>Key Features:</strong></p>
+                  <ul>
+                    <li>🌐 Multi-Node Network : Simulates a network of nodes, visually representing their positions and
+                      connections. Users can add new nodes to see how the network expands.</li>
+                    <li>💰 Wallet & Transaction Management : Allows users to create new wallets, view balances, and send
+                      transactions between them. The simulation shows pending transactions in a mempool before they are
+                      confirmed in a block.</li>
+                    <li>⛏️ Proof-of-Work Mining : A mining process is simulated where a random node attempts to solve a
+                      cryptographic puzzle to create a new block. The successful miner receives a block reward and
+                      transaction fees.</li>
+                    <li>⛓️ Blockchain & Block Details : Nodes maintain their own copy of the blockchain. Users can
+                      inspect any node's blockchain to see the details of each block, including its hash, transactions,
+                      and the miner's nonce.</li>
+                    <li>⚙️ Dynamic Controls : Users can manually create transactions and start the mining process, or
+                      enable an auto system to run the simulation automatically. Controls for adjusting mining
+                      difficulty and network height are also available.</li>
+                  </ul>
+                </td>
+              </tr>
+
+              <!-- Oxymeter Service Project -->
+              <tr onmouseout="oxymeter_stop()" onmouseover="oxymeter_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='oxymeter_image'>
+                      <img src='images/oximeter_banner.jpg' width="160">
+                    </div>
+                    <img src='images/oximeter_banner.jpg' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function oxymeter_start() {
+                      document.getElementById('oxymeter_image').style.opacity = "1";
+                    }
+                    function oxymeter_stop() {
+                      document.getElementById('oxymeter_image').style.opacity = "0";
+                    }
+                    oxymeter_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="https://github.com/antonagafonov/oxymeter_service_v2">
+                    <span class="papertitle">Oxymeter Service V2</span>
+                  </a>
+
+                  <em>Medical Device Software</em>
+                  <br>
+                  <a href="https://github.com/antonagafonov/oxymeter_service_v2">Github</a>
+                  <p></p>
+                  <p>
+                    Medical device service software, combining a hardware interface with real-time signal processing and
+                    data analytics. This includes reading data from a finger-worn oximeter device via Raspberry Pi Zero
+                    and monitoring cold bath temperature. Future integration will involve camera-based pulse readings
+                    using synthetic data from:
+                  <ul>
+                    <li><a href="https://github.com/ubicomplab/rPPG-Toolbox">rPPG-Toolbox</a></li>
+                    <li><a href="https://github.com/danmcduff/scampsdataset">SCAMPS dataset</a></li>
+                    <li><a
+                        href="https://github.com/FKgk/detect-heart-rate-using-face/blob/master/summary.md#Dataset">detect-heart-rate-using-face
+                        dataset summary</a></li>
+                  </ul>
+                  </p>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <table style="width:100%; margin:0 auto; border:0; border-spacing:0; padding:16px;">
+            <tbody>
+              <tr>
+                <td>
+                  <h2>Background</h2>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table
+            style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+
+              <tr>
+                <td align="center" style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="colored-box" style="background-color: #fcb97d;">
+                    <h2>Areas of Interest</h2>
+                  </div>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  Computer Vision
+                  <br>
+                  Image Processing
+                  <br>
+                  Machine Learning & Deep Learning
+                  <br>
+                  Robotics
+                </td>
+              </tr>
+
+              <tr>
+                <td align="center" style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="colored-box" style="background-color: #aaba9e;">
+                    <h2>Technical Skills</h2>
+                  </div>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:center">
+                  <strong>Programming:</strong> Python, PyTorch, TensorFlow<br>
+                  <strong>Robotics:</strong> UR (Universal Robots), ROS2, IsaacSim\IsaacLab<br>
+                  <strong>Tools:</strong> Linux, Git, Real-time 6D pose estimation<br>
+                  <strong>Specializations:</strong> Behavioral cloning, Imitation learning, Medical device design
+                </td>
+              </tr>
+
+              <tr>
+                <td align="center" style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="colored-box" style="background-color: #c6b89e;">
+                    <h2>Experience</h2>
+                  </div>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:center">
+                  <strong>Team Lead Applied Researcher</strong> - Bosch Corporate Research (2025-Present)<br>
+                  <em>Leading robotics R&D in manipulation and perception for real-time automation</em>
+                  <br><br>
+                  <strong>Postgraduate Applied Research Intern</strong> - Bosch Corporate Research (2024-2025)<br>
+                  <em>Developing real-time robotic insertion-assembly solutions with 6D pose estimation</em>
+                  <br><br>
+                  <strong>Senior R&D Mechanical Engineer</strong> - Medical Device Companies (2018-2021)<br>
+                  <em>Designed and developed medical devices from market requirements to commercial launch</em>
+                </td>
+              </tr>
+
+              <tr>
+                <td align="center" style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="colored-box" style="background-color: #edd892;">
+                    <h2>Education</h2>
+                  </div>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:center">
+                  <strong>M.Sc in Electrical and Computer Engineering</strong><br>
+                  Technion â€" Israel Institute of Technology (2021-2024)<br>
+                  <em>Research: <a href="https://antonagafonov.github.io/STMPL/">Human body soft tissue deformation Deep
+                      Learning Simulation</a></em>
+                  <br><br>
+                  <strong>B.Sc in Mechanical Engineering (cum laude)</strong><br>
+                  Technion â€" Israel Institute of Technology (2013-2017)<br>
+                  <em>Excellence "Reamim" track, GPA 91/100</em>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <table
+            style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+              <tr>
+                <td style="padding:0px">
+                  <br>
+                  <p style="text-align:right;font-size:small;">
+                    Website template adapted from <a href="https://github.com/jonbarron/jonbarron_website">academic
+                      template</a>.
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+  </table>
+</body>
+
+</html>
