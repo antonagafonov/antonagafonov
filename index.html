@@ -87,22 +87,21 @@
                     Anton Agafonov
                   </p>
                   <p style="text-align:justify;">
-                    I'm an AI Engineer and Team Lead at Bosch Corporate Research, developing multimodal,
-                    perception-based policies for real-time robotic systems.
-                    I translate scene understanding into actionable outputs for autonomous decision making, leveraging
-                    state-of-the-art models including diffusion-based policies and Vision-Language-Action (VLA/VLM)
-                    models.
-                    I built a multimodal vision-action diffusion policy from scratch, featuring attention-based
-                    perception encoders that fuse proprioception with dual egocentric camera data for real-time robotic
-                    manipulation and assembly.
-                    I have adapted foundation VLA models (SmolVLA, Pi0.5) through targeted dataset collection and
-                    fine-tuning using open-source frameworks.
-                    My work includes developing real-time algorithms for 6D pose estimation from mono-RGB input,
-                    integrating advanced vision models (SAM2, MegaPose) into scalable industrial workflows.
-                    I stay continuously up-to-date with recent research in multimodal AI and robotics, ensuring my work
-                    incorporates the latest advancements.
-                    My multidisciplinary background in both AI and Mechanical Engineering R&D provides a unique
-                    systems-level understanding, enhancing my contributions to the team.
+                    I'm a Physical AI Engineer developing multimodal, perception-driven action policies for
+                    real-time robotic systems. My work spans the full Physical AI stack — from designing system
+                    architecture and core algorithmic blocks (action policies, robotic perception, multimodal sensor
+                    fusion) to working hands-on with the physical system itself: integrating and commissioning sensors,
+                    closing the perception-to-action loop on real hardware.
+                    <br><br>
+                    Currently at <strong>Forsight Robotics</strong>, developing autonomous robotic systems for
+                    ophthalmic surgery — applying deep learning and computer vision to safety-critical real-time
+                    surgical systems. Previously at <strong>Bosch Corporate Research</strong>, where I built a
+                    multimodal vision-action diffusion policy from scratch, developed real-time 6D pose estimation
+                    pipelines, and fine-tuned foundation VLA models (SmolVLA, Pi0.5).
+                    <br><br>
+                    Formerly a senior mechanical engineer developing high-end medical and robotic devices — I bring a
+                    hard-won systems mindset: data, models, control, and mechanics must work in the real world,
+                    otherwise the algorithm is just a paper experiment.
                   </p>
                   <p style="text-align:center">
                     <a href="mailto:toonagafonov@gmail.com">Email</a> &nbsp;/&nbsp;
@@ -247,55 +246,6 @@
               </tr>
 
               <!-- Autonomous Car Project -->
-              <tr onmouseout="autonomus_car_stop()" onmouseover="autonomus_car_start()">
-                <td style="padding:16px;width:20%;vertical-align:middle">
-                  <div class="one">
-                    <div class="two" id='autonomus_car_image'>
-                      <img src='images/car_banner.png' width="160">
-                    </div>
-                    <img src='images/car_banner.png' width="160">
-                  </div>
-                  <script type="text/javascript">
-                    function autonomus_car_start() {
-                      document.getElementById('autonomus_car_image').style.opacity = "1";
-                    }
-                    function autonomus_car_stop() {
-                      document.getElementById('autonomus_car_image').style.opacity = "0";
-                    }
-                    autonomus_car_stop()
-                  </script>
-                </td>
-                <td style="padding:8px;width:80%;vertical-align:middle">
-                  <a href="https://github.com/antonagafonov/autonomus_car">
-                    <span class="papertitle">Autonomous Car</span>
-                  </a>
-
-                  <em>Autonomous Vehicle Project</em>
-                  <br>
-                  <a href="https://github.com/antonagafonov/autonomus_car">Github</a> &nbsp;/&nbsp;
-                  <a href="images/full_circle.mp4" target="_blank">Video</a>
-                  <p></p>
-                  Autonomous vehicle control and navigation system with computer vision and machine learning components
-                  for real-time decision making and path planning.
-                  </p>
-                  <ul>
-                    <li><strong>PS4 Controller Integration:</strong> Manual control interface for data collection and
-                      system override capabilities</li>
-                    <li><strong>PID-Based Data Collection:</strong> Precision control system for gathering high-quality
-                      training datasets with consistent vehicle dynamics</li>
-                    <li><strong>PID-Based Autonomous Drive:</strong> Traditional control algorithm implementation for
-                      baseline autonomous navigation and comparison benchmarking</li>
-                    <li><strong>Trained CNN-Based Autonomous Policy:</strong> Deep learning approach using convolutional
-                      neural networks for end-to-end autonomous driving decisions</li>
-                    <li><strong>Jetson Nano Implementation:</strong> Currently developing and optimizing the system for
-                      deployment on NVIDIA Jetson Nano edge computing platform</li>
-                    <li><strong>ROS2 Integration:</strong> Implementing the entire system architecture using ROS2 for
-                      modular, scalable, and distributed autonomous vehicle control</li>
-
-                  </ul>
-                </td>
-              </tr>
-
               <!-- Autonomous Car Jetson NX Project -->
               <tr onmouseout="autonomus_car_stop()" onmouseover="autonomus_car_start()">
                 <td style="padding:16px;width:20%;vertical-align:middle">
@@ -349,6 +299,55 @@
                   <p><strong>Technical Implementation:</strong> The system uses precise PWM-based differential drive
                     control, comprehensive parameter configuration, and robust command routing with topics for joystick
                     input, manual control commands, and final motor commands.</p>
+                </td>
+              </tr>
+
+              <tr onmouseout="autonomus_car_stop()" onmouseover="autonomus_car_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='autonomus_car_image'>
+                      <img src='images/car_banner.png' width="160">
+                    </div>
+                    <img src='images/car_banner.png' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function autonomus_car_start() {
+                      document.getElementById('autonomus_car_image').style.opacity = "1";
+                    }
+                    function autonomus_car_stop() {
+                      document.getElementById('autonomus_car_image').style.opacity = "0";
+                    }
+                    autonomus_car_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="https://github.com/antonagafonov/autonomus_car">
+                    <span class="papertitle">Autonomous Car</span>
+                  </a>
+
+                  <em>Autonomous Vehicle Project</em>
+                  <br>
+                  <a href="https://github.com/antonagafonov/autonomus_car">Github</a> &nbsp;/&nbsp;
+                  <a href="images/full_circle.mp4" target="_blank">Video</a>
+                  <p></p>
+                  Autonomous vehicle control and navigation system with computer vision and machine learning components
+                  for real-time decision making and path planning.
+                  </p>
+                  <ul>
+                    <li><strong>PS4 Controller Integration:</strong> Manual control interface for data collection and
+                      system override capabilities</li>
+                    <li><strong>PID-Based Data Collection:</strong> Precision control system for gathering high-quality
+                      training datasets with consistent vehicle dynamics</li>
+                    <li><strong>PID-Based Autonomous Drive:</strong> Traditional control algorithm implementation for
+                      baseline autonomous navigation and comparison benchmarking</li>
+                    <li><strong>Trained CNN-Based Autonomous Policy:</strong> Deep learning approach using convolutional
+                      neural networks for end-to-end autonomous driving decisions</li>
+                    <li><strong>Jetson Nano Implementation:</strong> Currently developing and optimizing the system for
+                      deployment on NVIDIA Jetson Nano edge computing platform</li>
+                    <li><strong>ROS2 Integration:</strong> Implementing the entire system architecture using ROS2 for
+                      modular, scalable, and distributed autonomous vehicle control</li>
+
+                  </ul>
                 </td>
               </tr>
 
@@ -472,13 +471,17 @@
                   </div>
                 </td>
                 <td style="padding:8px;width:80%;vertical-align:middle">
-                  Computer Vision
+                  Physical AI &amp; Robotic Systems
                   <br>
-                  Image Processing
+                  Computer Vision &amp; Perception
                   <br>
-                  Machine Learning & Deep Learning
+                  Diffusion Policies &amp; VLA/VLM Models
                   <br>
-                  Robotics
+                  Multimodal Sensor Fusion
+                  <br>
+                  Imitation Learning &amp; Action Policies
+                  <br>
+                  3D Scene Understanding
                 </td>
               </tr>
 
@@ -490,9 +493,10 @@
                 </td>
                 <td style="padding:8px;width:80%;vertical-align:center">
                   <strong>Programming:</strong> Python, PyTorch, TensorFlow<br>
-                  <strong>Robotics:</strong> UR (Universal Robots), ROS2, IsaacSim\IsaacLab<br>
-                  <strong>Tools:</strong> Linux, Git, Real-time 6D pose estimation<br>
-                  <strong>Specializations:</strong> Behavioral cloning, Imitation learning, Medical device design
+                  <strong>Robotics:</strong> ROS2, Isaac Sim, MuJoCo, UR-cobot, Jetson<br>
+                  <strong>Tools:</strong> Linux, Git, Docker, multi-GPU training<br>
+                  <strong>Specializations:</strong> Physical AI, Action Policies, Diffusion Policies, VLA/VLM, 6D Pose
+                  Estimation, Multimodal Sensor Fusion, Imitation Learning
                 </td>
               </tr>
 
@@ -503,14 +507,17 @@
                   </div>
                 </td>
                 <td style="padding:8px;width:80%;vertical-align:center">
-                  <strong>Team Lead Applied Researcher</strong> - Bosch Corporate Research (2025-Present)<br>
-                  <em>Leading robotics R&D in manipulation and perception for real-time automation</em>
+                  <strong>Physical AI Engineer</strong> - Forsight Robotics (Jan 2026–Present)<br>
+                  <em>Developing autonomous robotic systems for ophthalmic surgery — Physical AI stack from architecture
+                    to hardware commissioning</em>
                   <br><br>
-                  <strong>Postgraduate Applied Research Intern</strong> - Bosch Corporate Research (2024-2025)<br>
-                  <em>Developing real-time robotic insertion-assembly solutions with 6D pose estimation</em>
+                  <strong>Applied Researcher (Intern → Team Lead)</strong> - Bosch Corporate Research (2024–Present)<br>
+                  <em>Built multimodal diffusion policies, 6D pose estimation pipelines, and fine-tuned foundation VLA
+                    models for real-time industrial robotics</em>
                   <br><br>
-                  <strong>Senior R&D Mechanical Engineer</strong> - Medical Device Companies (2018-2021)<br>
-                  <em>Designed and developed medical devices from market requirements to commercial launch</em>
+                  <strong>Senior R&amp;D Mechanical Engineer</strong> - Medical Device Companies (2018–2021)<br>
+                  <em>Designed and developed medical devices from market requirements to commercial launch — Boston
+                    &amp; Israel</em>
                 </td>
               </tr>
 
