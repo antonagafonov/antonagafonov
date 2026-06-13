@@ -136,6 +136,71 @@
             style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
 
+              <!-- AIC Cable Insertion Challenge -->
+              <tr onmouseout="aic_stop()" onmouseover="aic_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='aic_image'>
+                      <img src='images/aic_banner.JPG' width="160">
+                    </div>
+                    <img src='images/aic_banner.JPG' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function aic_start() {
+                      document.getElementById('aic_image').style.opacity = "1";
+                    }
+                    function aic_stop() {
+                      document.getElementById('aic_image').style.opacity = "0";
+                    }
+                    aic_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="https://github.com/intrinsic-dev/aic">
+                    <span class="papertitle">AIC: Sim-to-Real Cable Insertion Challenge</span>
+                  </a>
+                  <br>
+                  <em>Intrinsic AI for Industry Challenge &mdash; Personal Project</em>, 2026
+                  <br>
+                  <a href="https://github.com/intrinsic-dev/aic">Challenge Repo</a>
+                  <p></p>
+                  <p>
+                    End-to-end sim-to-real cable insertion stack for Intrinsic's AI for Industry Challenge &mdash;
+                    UR5e + Robotiq Hand-E with 3 wrist cameras and an ATI F/T sensor inserting SFP plugs into NIC
+                    card ports. Built data collection, training, and evaluation pipelines across <strong>Gazebo
+                    Harmonic</strong> (the eval simulator) and <strong>Isaac Lab</strong> (parallel collection),
+                    targeting both qualification phases and the public trials.
+                  </p>
+                  <p><strong>Key Contributions:</strong></p>
+                  <ul>
+                    <li><strong>Native ROS2 Kilted Build:</strong> Built the full AIC stack from source (no Docker)
+                      with C++20 / gcc-13, including Gazebo + ros-gz bridge wiring and CablePlugin patches
+                      (<em>detach_gripper / attach_gripper</em>, <em>disable_port_attachment</em>) enabling
+                      multi-cycle data collection without losing the gripper-cable joint.</li>
+                    <li><strong>BCCheatCode Insertion Policy:</strong> Closed-loop PI controller on plug-to-port XY
+                      error with SLERP orientation interpolation &mdash; the controller that reliably inserts the
+                      flexible 80-link cable under the eval impedance controller, against which open-loop VF and OSC
+                      both failed.</li>
+                    <li><strong>Data Collection Pipelines:</strong> Authored <em>VFCollectPolicy</em> (recording
+                      wrapper for cameras, TCP pose, plug pose, F/T, joints, action deltas) and a Python trial
+                      orchestrator with board-only respawn that avoids arm sag. Collected 2&nbsp;160 expert
+                      trajectories in parallel Isaac Lab environments.</li>
+                    <li><strong>Diffusion Policy Training:</strong> Trained LeRobot-style diffusion with classifier-
+                      free guidance on a port embedding and an auxiliary progress head; achieved
+                      <code>val_chunk_mse</code> &lt; 0.04 on the combined far-spawn dataset.</li>
+                    <li><strong>Sim-to-Sim Engineering:</strong> Diagnosed and worked around Isaac &harr; Gazebo
+                      parity issues &mdash; 2&times; gravity-comp torque mismatch, ~35&deg; insertion-axis bug on
+                      the IsaacLab side, and unreliable collision physics around SC ports &mdash; documenting the
+                      portable feature surface for cross-sim policies.</li>
+                    <li><strong>Flexible Cable Physics:</strong> Regenerated the cable as an 80-link / 12&nbsp;mm
+                      chain with retuned joint stiffness and damping, producing a markedly more compliant cable
+                      than the upstream 20-link model and making PI-control insertion viable.</li>
+                  </ul>
+                  <p><strong>Stack:</strong> ROS2 Kilted, Gazebo Harmonic, Isaac Lab / Isaac Sim, LeRobot,
+                    PyTorch, MoveIt, OpenCV, MuJoCo. UR5e + Robotiq Hand-E + ATI F/T.</p>
+                </td>
+              </tr>
+
               <!-- IndustRoPose Project -->
               <tr onmouseout="industropose_stop()" onmouseover="industropose_start()">
                 <td style="padding:16px;width:20%;vertical-align:middle">
