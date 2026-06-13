@@ -162,7 +162,8 @@
                   <br>
                   <em>Intrinsic AI for Industry Challenge &mdash; Personal Project</em>, 2026
                   <br>
-                  <a href="https://github.com/intrinsic-dev/aic">Challenge Repo</a>
+                  <a href="https://github.com/intrinsic-dev/aic">Challenge Repo</a> &nbsp;/&nbsp;
+                  <a href="html/aic_lessons.html">Learned the Hard Way</a>
                   <p></p>
                   <p>
                     End-to-end sim-to-real cable insertion stack for Intrinsic's AI for Industry Challenge &mdash;
@@ -198,49 +199,6 @@
                   </ul>
                   <p><strong>Stack:</strong> ROS2 Kilted, Gazebo Harmonic, Isaac Lab / Isaac Sim, LeRobot,
                     PyTorch, MoveIt, OpenCV, MuJoCo. UR5e + Robotiq Hand-E + ATI F/T.</p>
-                  <p><strong>Learned the hard way:</strong></p>
-                  <ul>
-                    <li><strong>Don't fake spawn poses with motion controllers.</strong> Five attempts to reposition
-                      the arm near the socket via VF pre-rolls, OSC waypoints, two-phase OSC, and an IK + spawn-cone
-                      teleport all failed (overshoot, below-table crashes, "two motions" artifacts, in-table spawns).
-                      The right answer is the boring one: drive the arm to a good pose with teleop, read the joints
-                      off the property panel, and hardcode them into <code>init_state.joint_pos</code>.</li>
-                    <li><strong>Open-loop control loses to flexible-cable dynamics.</strong> A flexible 80-link cable
-                      under an impedance controller produces sag, swing, and lateral levering. Pure P-control
-                      oscillates around the swing-induced steady-state error; only the <strong>integral term</strong>
-                      reliably zeroes it. Vector-field control is safe only for monotonic descent &mdash; never feed
-                      it an above-port waypoint, it will overshoot upward.</li>
-                    <li><strong>Read-after-write returns stale physics state.</strong> <code>robot.data.body_pos_w</code>
-                      after <code>write_root_pose_to_sim</code> in Isaac, or a TF lookup right after a Gazebo respawn,
-                      both return pre-write data. Always step the sim once or gate on a fresh
-                      <code>/clock</code> tick before consuming pose data &mdash; many "sign error" and
-                      "crashed into the table" bugs traced to this.</li>
-                    <li><strong>Sim-to-sim is not free.</strong> Isaac Lab and Gazebo do not agree: gravity-comp
-                      torques differ by 2&times;, the IsaacLab insertion axis is ~35&deg; off because card rotation
-                      isn't applied to a hardcoded offset, and SC-port collisions are unreliable in both Gazebo and
-                      MuJoCo. Effort/torque features are non-portable &mdash; train on position / velocity if you
-                      want the policy to transfer.</li>
-                    <li><strong>Filter at collection time, not at training time.</strong> Bad trajectories left on
-                      disk get re-read every epoch and silently leak in when filter logic drifts. Classify and drop
-                      per-trial outcomes the moment they happen.</li>
-                    <li><strong>Long unattended runs die at the same threshold.</strong> CablePlugin segfaults around
-                      140&ndash;150 sequential spawn/delete cycles (upstream entity leak). Batch collection in chunks
-                      of &lt;120 episodes with a full Gazebo restart between batches.</li>
-                    <li><strong>Controller state carries between episodes.</strong> Without an explicit command-buffer
-                      zero and a joint-velocity ~0 check, the first step of every new trial gets a "kick" from stale
-                      commanded pose &mdash; matches the upstream init-sag report and corrupts the first frames of the
-                      bag.</li>
-                    <li><strong>Full robot+cable respawn breaks the impedance controller.</strong> Sudden cable load
-                      at spawn-time sags the arm and a stiffness ramp introduces new pathologies. Board-only respawn
-                      (delete and re-add just the task board) sidesteps it entirely.</li>
-                    <li><strong>Don't trust the Gazebo touch sensor alone.</strong> The contact collision box is
-                      0.25&nbsp;mm thin and the plug routinely misses it. Add a proximity-based fallback
-                      (e.g. 3&nbsp;mm Z threshold) before declaring insertion done.</li>
-                    <li><strong>F/T tare doesn't tare the gravity bias.</strong> The wrist Fz reads ~20&nbsp;N at
-                      init from the gripper's own weight, and contact actually <em>decreases</em> Fz as the normal
-                      force partially cancels gravity. Threshold on the delta from steady-state, not the absolute
-                      value.</li>
-                  </ul>
                 </td>
               </tr>
 

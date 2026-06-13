@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>AIC &mdash; Learned the Hard Way</title>
+  <meta name="author" content="Anton Agafonov">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="../images/favicon/favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Lato', Verdana, Helvetica, sans-serif;
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 20px 60px 20px;
+    }
+
+    .name {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 0 0 6px 0;
+    }
+
+    .subtitle {
+      color: #555;
+      font-style: italic;
+      margin: 0 0 18px 0;
+    }
+
+    a {
+      color: #1772d0;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #f09228;
+    }
+
+    .lesson {
+      margin: 18px 0;
+      padding: 14px 16px;
+      background: #fafafa;
+      border-left: 3px solid #1772d0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .lesson h3 {
+      margin: 0 0 6px 0;
+      font-size: 15px;
+      color: #1a1a1a;
+    }
+
+    .lesson p {
+      margin: 0;
+      text-align: justify;
+    }
+
+    .nav {
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    .meta {
+      color: #777;
+      font-size: 12px;
+      border-top: 1px solid #ddd;
+      padding-top: 14px;
+      margin-top: 30px;
+    }
+
+    code {
+      background: #eef;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    .banner {
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin: 0 0 18px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav">
+      <a href="../index.html">&larr; back to projects</a>
+    </div>
+
+    <img src="../images/aic_banner.png" alt="AIC cable insertion banner" class="banner">
+
+    <p class="name">AIC &mdash; Learned the Hard Way</p>
+    <p class="subtitle">Field notes from Intrinsic's AI for Industry Challenge &mdash; sim-to-real cable insertion, 2026.</p>
+
+    <p>
+      Three workspaces, six weeks, and a deadline that slid into the next quarter taught me more about the
+      gap between "the policy should work" and "the policy actually inserts the plug" than any paper did.
+      What follows is the short list of mistakes I do not intend to repeat.
+    </p>
+
+    <div class="lesson">
+      <h3>1. Don't fake spawn poses with motion controllers.</h3>
+      <p>Five attempts to reposition the arm near the socket via VF pre-rolls, OSC waypoints, two-phase OSC,
+        and an IK + spawn-cone teleport all failed &mdash; overshoot, below-table crashes, "two motions"
+        artifacts, in-table spawns. The right answer is the boring one: drive the arm to a good pose with
+        teleop, read the joints off the property panel, and hardcode them into
+        <code>init_state.joint_pos</code>.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>2. Open-loop control loses to flexible-cable dynamics.</h3>
+      <p>An 80-link flexible cable under an impedance controller produces sag, swing, and lateral levering.
+        Pure P-control oscillates around the swing-induced steady-state error; only the <strong>integral
+          term</strong> reliably zeroes it. Vector-field control is safe only for monotonic descent &mdash;
+        never feed it an above-port waypoint, it will overshoot upward.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>3. Read-after-write returns stale physics state.</h3>
+      <p><code>robot.data.body_pos_w</code> right after <code>write_root_pose_to_sim</code> in Isaac, or a
+        TF lookup right after a Gazebo respawn, both return pre-write data. Always step the sim once or gate
+        on a fresh <code>/clock</code> tick before consuming pose data. Many "sign error" and "crashed into
+        the table" bugs traced back to this.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>4. Sim-to-sim is not free.</h3>
+      <p>Isaac Lab and Gazebo do not agree: gravity-comp torques differ by 2&times;, the IsaacLab insertion
+        axis is ~35&deg; off because card rotation is not applied to a hardcoded offset, and SC-port
+        collisions are unreliable in both Gazebo and MuJoCo. Effort and torque features are non-portable
+        &mdash; train on position / velocity if you want the policy to transfer.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>5. Filter at collection time, not at training time.</h3>
+      <p>Bad trajectories left on disk get re-read every epoch and silently leak in when filter logic
+        drifts. Classify and drop per-trial outcomes the moment they happen &mdash; or write them to a
+        quarantine directory so they cannot be picked up by the loader.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>6. Long unattended runs die at the same threshold.</h3>
+      <p>CablePlugin segfaults around 140&ndash;150 sequential spawn/delete cycles &mdash; an upstream
+        entity leak in detachable joints. Batch collection in chunks of fewer than 120 episodes and tear
+        Gazebo down and back up between batches.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>7. Controller state carries between episodes.</h3>
+      <p>Without an explicit command-buffer zero and a joint-velocity ~0 check, the first step of every new
+        trial gets a "kick" from a stale commanded pose. Matches the upstream init-sag report and corrupts
+        the first frames of the bag.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>8. Full robot+cable respawn breaks the impedance controller.</h3>
+      <p>Sudden cable load at spawn-time sags the arm, and a stiffness ramp introduces new pathologies
+        (weird transients, XY divergence). Board-only respawn &mdash; delete and re-add just the task board
+        &mdash; sidesteps the whole problem.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>9. Don't trust the Gazebo touch sensor alone.</h3>
+      <p>The contact collision box is 0.25&nbsp;mm thin and the plug routinely misses it. Add a
+        proximity-based fallback (e.g. 3&nbsp;mm Z threshold) before declaring insertion done.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>10. F/T tare does not tare the gravity bias.</h3>
+      <p>The wrist Fz reads ~20&nbsp;N at init from the gripper's own weight, and contact actually
+        <em>decreases</em> Fz as the normal force partially cancels gravity. Threshold on the delta from
+        steady-state, not the absolute value.</p>
+    </div>
+
+    <div class="lesson">
+      <h3>Underlying principle.</h3>
+      <p>Every time I reached for a clever solution (controller-driven spawn, stiffness ramps, multi-phase
+        motion plans) it cost me a session and produced nothing. The dumb fix &mdash; change a constant,
+        hardcode an init, restart the sim &mdash; was almost always within reach and almost always
+        shipped.</p>
+    </div>
+
+    <p class="meta">
+      Source notes live across three local workspaces (<code>ws_aic</code>, <code>ws_aic_mine</code>,
+      <code>ws_aic_second</code>) and the IsaacLab/aic fork; this page is the distilled public version.
+      Last updated 2026-06-13.
+    </p>
+
+    <div class="nav" style="margin-top: 20px;">
+      <a href="../index.html">&larr; back to projects</a>
+    </div>
+  </div>
+</body>
+
+</html>
