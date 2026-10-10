@@ -136,6 +136,62 @@
             style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
 
+              <!-- IROS 2026 Robotic Origami Challenge -->
+              <tr onmouseout="origami_stop()" onmouseover="origami_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='origami_image'>
+                      <img src='images/origami_banner_hover.jpg' width="160">
+                    </div>
+                    <img src='images/origami_banner.jpg' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function origami_start() {
+                      document.getElementById('origami_image').style.opacity = "1";
+                    }
+                    function origami_stop() {
+                      document.getElementById('origami_image').style.opacity = "0";
+                    }
+                    origami_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <span class="papertitle">Robotic Origami Challenge: Bimanual Paper-Airplane Folding</span>
+                  <br>
+                  <em>IROS 2026 Competition &mdash; Pittsburgh</em>, 2026
+                  <br>
+                  <a href="videos/origami_smolvla_rerun.mp4" target="_blank">Video: Policy vs. Ground Truth</a> &nbsp;/&nbsp;
+                  <a href="videos/origami_fold_tracking.mp4" target="_blank">Video: Fold Tracking</a>
+                  <p></p>
+                  <p>
+                    Imitation-learning entry for folding a classic 6-fold paper airplane with a bimanual humanoid
+                    torso and dexterous <strong>Sharpa</strong> hands (head + two fisheye wrist cameras,
+                    tactile sensing). Learned directly from real teleoperation data, with simulation used as a
+                    tool rather than a sim-to-real path; policies were evaluated on the organizers' hardware.
+                  </p>
+                  <img src="images/origami_filmstrip.png" style="width:100%;border-radius:4px" alt="Hardware evaluation rollout filmstrip">
+                  <p><strong>Key Contributions:</strong></p>
+                  <ul>
+                    <li><strong>Policy Bake-off:</strong> Trained and gated 18+ policies (SmolVLA, ACT, Diffusion
+                      Policy) on teleop data, conditioned on a per-fold step prompt, with offline and closed-loop
+                      docker evaluation against the organizers' inference client.</li>
+                    <li><strong>Smooth Action Representation:</strong> B-spline action chunks plus temporal
+                      ensembling across overlapping chunks &mdash; cut executed jerk from 18&ndash;38&times; to
+                      ~4&times; ground truth while keeping motion amplitude at ~1.05&times;.</li>
+                    <li><strong>Fold-Step Labeling &amp; Tracking:</strong> SAM2-based paper segmentation and
+                      homography tracking across all three cameras to detect fold boundaries and auto-label
+                      sequence steps.</li>
+                    <li><strong>Pipeline Audit:</strong> Found a silent bug where the VLM vision backbone was
+                      randomly initialized and frozen &mdash; loss fell, shapes matched, tests passed, but the
+                      policy was blind. Added behavioral "blind-image" tests that measure how much a policy
+                      actually depends on vision vs. proprioception.</li>
+                    <li><strong>Tooling:</strong> Rerun-based viewer overlaying predicted vs. ground-truth
+                      trajectories on the robot URDF with synchronized camera streams.</li>
+                  </ul>
+                  <p><strong>Stack:</strong> LeRobot, SmolVLA, ACT, Diffusion Policy, SAM2, Rerun, Isaac Lab, PyTorch</p>
+                </td>
+              </tr>
+
               <!-- AIC Cable Insertion Challenge -->
               <tr onmouseout="aic_stop()" onmouseover="aic_start()">
                 <td style="padding:16px;width:20%;vertical-align:middle">
@@ -595,12 +651,12 @@
                 </td>
                 <td style="padding:8px;width:80%;vertical-align:center">
                   <strong>M.Sc in Electrical and Computer Engineering</strong><br>
-                  Technion â€" Israel Institute of Technology (2021-2024)<br>
+                  Technion — Israel Institute of Technology (2021-2024)<br>
                   <em>Research: <a href="https://antonagafonov.github.io/STMPL/">Human body soft tissue deformation Deep
                       Learning Simulation</a></em>
                   <br><br>
                   <strong>B.Sc in Mechanical Engineering (cum laude)</strong><br>
-                  Technion â€" Israel Institute of Technology (2013-2017)<br>
+                  Technion — Israel Institute of Technology (2013-2017)<br>
                   <em>Excellence "Reamim" track, GPA 91/100</em>
                 </td>
               </tr>
