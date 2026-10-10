@@ -160,8 +160,13 @@
                   <br>
                   <em>IROS 2026 Competition &mdash; Pittsburgh</em>, 2026
                   <br>
-                  <a href="videos/origami_smolvla_rerun.mp4" target="_blank">Video: Policy vs. Ground Truth</a> &nbsp;/&nbsp;
-                  <a href="videos/origami_fold_tracking.mp4" target="_blank">Video: Fold Tracking</a>
+                  Videos:
+                  <a href="videos/origami_hw_rollout.mp4" target="_blank">Real-Robot Rollout</a> &nbsp;/&nbsp;
+                  <a href="videos/origami_smolvla_rerun.mp4" target="_blank">Policy vs. Ground Truth</a> &nbsp;/&nbsp;
+                  <a href="videos/origami_fold_tracking.mp4" target="_blank">Fold Tracking</a> &nbsp;/&nbsp;
+                  <a href="videos/origami_sam2_seg.mp4" target="_blank">SAM2 Segmentation</a> &nbsp;/&nbsp;
+                  <a href="videos/origami_sharpa_tactile_sim.mp4" target="_blank">Tactile Sim</a> &nbsp;/&nbsp;
+                  <a href="videos/origami_head_kinematics.mp4" target="_blank">Head Kinematics</a>
                   <p></p>
                   <p>
                     Imitation-learning entry for folding a classic 6-fold paper airplane with a bimanual humanoid
@@ -170,14 +175,6 @@
                     tool rather than a sim-to-real path; policies were evaluated on the organizers' hardware.
                   </p>
                   <img src="images/origami_filmstrip.png" style="width:100%;border-radius:4px" alt="Hardware evaluation rollout filmstrip">
-                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:8px;font-size:12px">
-                    <figure style="margin:0"><video src="videos/origami_hw_rollout.mp4" autoplay muted loop playsinline style="width:100%;border-radius:4px"></video><figcaption>Policy rollout on the real robot (head camera)</figcaption></figure>
-                    <figure style="margin:0"><video src="videos/origami_smolvla_rerun.mp4" autoplay muted loop playsinline style="width:100%;border-radius:4px"></video><figcaption>SmolVLA prediction vs. ground truth in Rerun</figcaption></figure>
-                    <figure style="margin:0"><video src="videos/origami_fold_tracking.mp4" autoplay muted loop playsinline style="width:100%;border-radius:4px"></video><figcaption>3-camera paper tracking &amp; fold-boundary detection</figcaption></figure>
-                    <figure style="margin:0"><video src="videos/origami_sam2_seg.mp4" autoplay muted loop playsinline style="width:100%;border-radius:4px"></video><figcaption>SAM2 paper segmentation for fold-step labels</figcaption></figure>
-                    <figure style="margin:0"><video src="videos/origami_sharpa_tactile_sim.mp4" autoplay muted loop playsinline style="width:100%;border-radius:4px"></video><figcaption>Sharpa hand tactile sensor in Isaac Sim</figcaption></figure>
-                    <figure style="margin:0"><video src="videos/origami_head_kinematics.mp4" autoplay muted loop playsinline style="width:100%;border-radius:4px"></video><figcaption>Debugging head-camera kinematics on the URDF</figcaption></figure>
-                  </div>
                   <p><strong>Key Contributions:</strong></p>
                   <ul>
                     <li><strong>Policy Bake-off:</strong> Trained and gated 18+ policies (SmolVLA, ACT, Diffusion
